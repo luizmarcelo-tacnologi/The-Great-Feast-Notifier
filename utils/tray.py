@@ -1,6 +1,6 @@
 import wx
 import wx.adv
-
+import utils.configpath as cfgp
 
 class TrayIcon(wx.adv.TaskBarIcon):
 
@@ -14,7 +14,7 @@ class TrayIcon(wx.adv.TaskBarIcon):
 
         self.SetIcon(
             wx.Icon(
-                "Atlas/hypixel.ico",
+                cfgp.resource_path("hypixel.ico"),
                 wx.BITMAP_TYPE_ICO
             ),
             "Grand Feast Notifier"
