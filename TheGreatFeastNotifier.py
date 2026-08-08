@@ -5,7 +5,6 @@ import threading
 import ctypes
 import subprocess
 import wx
-import wx.adv
 
 # ultils files
 import utils.configpath as cfgp
