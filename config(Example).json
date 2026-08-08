@@ -1,5 +1,5 @@
 {
-    "expire_date": "07/08/2026, 12:13:06",
+    "expire_date": "YOUR_API_KEY_EXPIRATION_DATE",
     "api_key": "YOUR_API_KEY",
     "check_interval": 1
 }

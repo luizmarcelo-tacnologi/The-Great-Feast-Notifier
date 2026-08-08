@@ -58,6 +58,19 @@ load_config()
 
 stop_event = threading.Event()
 
+def failed_request_handler(msg):
+    global failed_requests
+    failed_requests += 1
+    log(msg)
+    if failed_requests == 10:
+        log("[ERROR] Major Failed Request Streak!")
+        notification(
+            "Major Failed Request Streak!!!",
+            "Check the logs to see what is wrong!",
+            "Error.png",
+            "minecraft-level-up-sound"
+        )
+
 def check_api():
 
     global data
@@ -78,8 +91,7 @@ def check_api():
     
         if not data.get("success", False):
             cause = data.get("cause", "Unknown reason")
-            log(f"[WARNING] Hypixel API rejected the request: {cause}")
-            failed_requests += 1
+            failed_request_handler(f"[WARNING] Hypixel API rejected the request: {cause}")
             return
         else:
             if failed_requests > 0:
@@ -96,38 +108,25 @@ def check_api():
                 failed_requests = 0
 
     except requests.exceptions.Timeout:
-        log("[WARNING] Request timed out.")
-        failed_requests += 1
+        failed_request_handler("[WARNING] Request timed out.")
         return
 
     except requests.exceptions.ConnectionError:
-        log("[WARNING] Could not connect to the Hypixel API.")
-        failed_requests += 1
+        failed_request_handler("[WARNING] Could not connect to the Hypixel API.")
         return
     
     except requests.exceptions.HTTPError as e:
-        log(f"[WARNING] HTTP {response.status_code} - {e}")
-        failed_requests += 1
+        failed_request_handler(f"[WARNING] HTTP {response.status_code} - {e}")
         return
 
     except requests.exceptions.RequestException as e:
-        log(f"[WARNING] Request failed: {e}")
-        failed_requests += 1
+        failed_request_handler(f"[WARNING] Request failed: {e}")
         return
 
     except Exception as e:
-        log(f"[WARNING] {e}")
-        failed_requests += 1
+        failed_request_handler(f"[WARNING] {e}")
         return
-
-    if failed_requests == 10:
-            log("[ERROR] Major Failed Request Streak!")
-            notification(
-                "Major Failed Request Streak!!!",
-                "Check the logs to see what is wrong!",
-                "Error.png",
-                "minecraft-level-up-sound"
-            )
+            
     print(data)
 
 def check_once():
@@ -135,7 +134,6 @@ def check_once():
     global last_mayor_state
     global last_candidate_state
     global last_harvest_feast_state
-    global failed_requests
     global data
 
     finnegan_mayor_grandfeast = False
