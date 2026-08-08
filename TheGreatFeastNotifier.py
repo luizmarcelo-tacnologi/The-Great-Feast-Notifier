@@ -1,27 +1,22 @@
 import requests
 import time
 import json
-from pystray import Icon, Menu, MenuItem
-from PIL import Image
 import threading
 import ctypes
 import subprocess
+import wx
+import wx.adv
 
 # ultils files
 import utils.configpath as cfgp
 from utils.logger import log
 from utils.notifier import notification
+from utils.tray import TrayIcon
 
 cfgp.set_paths()
 
 APP_ID = "TheGreatFeastNotifier"
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
-
-def open_config(icon, item):
-    subprocess.Popen(["notepad.exe", cfgp.config_path])
-
-def open_logs(icon, item):
-    subprocess.Popen(["notepad.exe", cfgp.log_path])
 
 def load_config():
     global config
@@ -34,14 +29,20 @@ def load_config():
     API_KEY = config["api_key"]
     CHECK_INTERVAL = config["check_interval"]
 
-def quit_program(icon, item):
-    log("[NOTE] Program Closed")
-    stop_event.set()
-    icon.stop()
+def open_config():
+    subprocess.Popen(["notepad.exe", cfgp.config_path])
 
-def manual_check(icon, item):
+def open_logs():
+    subprocess.Popen(["notepad.exe", cfgp.log_path])
+
+def manual_check():
     log("[NOTE] Manual Checking!")
     check_once()
+
+def quit_program():
+    log("[NOTE] Program Closed")
+    stop_event.set()
+    wx.CallAfter(wx.GetApp().ExitMainLoop)
 
 last_mayor_state = False
 last_candidate_state = False
@@ -57,23 +58,6 @@ MONTHS_PER_YEAR = 12
 load_config()
 
 stop_event = threading.Event()
-image = Image.open(cfgp.resource_path("hypixel.ico"))
-
-menu = Menu(
-    MenuItem("Check now", manual_check),
-    Menu.SEPARATOR,
-    MenuItem("Open config", open_config),
-    MenuItem("Open logs", open_logs),
-    Menu.SEPARATOR,
-    MenuItem("Close", quit_program)
-)
-
-icon = Icon(
-    "FeastNotifier",
-    image,
-    "Grand Feast Notifier",
-    menu
-)
 
 def check_api():
 
@@ -219,9 +203,18 @@ def check_loop():
         
         stop_event.wait(CHECK_INTERVAL)
 
+app = wx.App(False)
+
+tray = TrayIcon(
+    check_now=manual_check,
+    open_config=open_config,
+    open_logs=open_logs,
+    quit_program=quit_program
+)
+
 threading.Thread(target=check_loop,daemon=True).start()
 
-icon.run()
+app.MainLoop()
 
 #Build code:
 #python -m PyInstaller --onefile --noconsole --icon=Atlas/hypixel.ico --add-data "Atlas;Atlas" TheGreatFeastNotifier.py
