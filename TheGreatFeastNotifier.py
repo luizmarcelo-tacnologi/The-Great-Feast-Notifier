@@ -211,4 +211,4 @@ threading.Thread(target=check_loop,daemon=True).start()
 app.MainLoop()
 
 #Build code:
-#python -m PyInstaller --onefile --noconsole --icon=Atlas/hypixel.ico --add-data "Atlas;Atlas" TheGreatFeastNotifier.py
+#py -m PyInstaller --onefile --noconsole --icon=Atlas/hypixel.ico --add-data "Atlas;Atlas" TheGreatFeastNotifier.py

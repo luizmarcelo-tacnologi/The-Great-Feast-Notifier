@@ -18,6 +18,3 @@ class TrayIcon(wx.adv.TaskBarIcon):
     def on_left_click(self, event):
         x, y = wx.GetMousePosition()
         self.menu.show_menu(x, y)
-
-    def show_menu(self, x, y):
-        print(f"Clicked at: {x}, {y}")
