@@ -1,6 +1,5 @@
 logs.txt
-dist/config.json
-dist/logs.txt
+dist/
 build/
 __pycache__/
 utils/__pycache__/
