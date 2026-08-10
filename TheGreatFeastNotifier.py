@@ -51,8 +51,8 @@ data = None
 
 SKYBLOCK_EPOCH = 1560275700
 SECONDS_PER_SKYBLOCK_DAY = 1200
+DAYS_PER_YEAR = 372
 DAYS_PER_MONTH = 31
-MONTHS_PER_YEAR = 12
 
 load_config()
 
@@ -157,8 +157,8 @@ def check_once():
         log("[DATA_WARNING] No data for next election's candidates!")
 
     now = time.time()
-    skyblock_days = int((now - SKYBLOCK_EPOCH) // SECONDS_PER_SKYBLOCK_DAY)
-    day_of_year = skyblock_days % (DAYS_PER_MONTH * MONTHS_PER_YEAR)
+    skyblock_days = (now - SKYBLOCK_EPOCH) // SECONDS_PER_SKYBLOCK_DAY
+    day_of_year = skyblock_days % DAYS_PER_YEAR
     month = day_of_year // DAYS_PER_MONTH
     harvest_feast = 6 <= month <= 8
 
