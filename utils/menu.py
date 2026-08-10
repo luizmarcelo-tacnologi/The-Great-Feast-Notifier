@@ -109,7 +109,7 @@ class TrayMenu(wx.Frame):
 
         exit_button = wx.Button(
             panel,
-            label="Exit"
+            label="Close App"
         )
 
         exit_button.Bind(
