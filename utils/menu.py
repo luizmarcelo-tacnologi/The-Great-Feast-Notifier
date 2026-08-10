@@ -2,19 +2,9 @@ import wx
 
 class TrayMenu(wx.Frame):
 
-    def __init__(
-        self,
-        check_now,
-        open_config,
-        open_logs,
-        quit_program
-    ):
-        super().__init__(
-            None,
-            style=wx.FRAME_NO_TASKBAR |
-                  wx.STAY_ON_TOP |
-                  wx.BORDER_NONE
-        )
+    def __init__(self,check_now,open_config,open_logs,quit_program):
+
+        super().__init__(None,style=wx.FRAME_NO_TASKBAR |wx.STAY_ON_TOP |wx.BORDER_NONE)
 
         self.check_now = check_now
         self.open_config = open_config
@@ -22,107 +12,40 @@ class TrayMenu(wx.Frame):
         self.quit_program = quit_program
 
         self.SetSize((180, 250))
-
         self.create_menu()
-
         self.Hide()
 
     def create_menu(self):
 
         panel = wx.Panel(self)
-
         panel.SetBackgroundColour(wx.WHITE)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        title = wx.StaticText(
-            panel,
-            label="The Great Feast Notifier"
-        )
+        title = wx.StaticText(panel,label="The Great Feast Notifier")
+        title.SetFont(wx.Font(12,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_BOLD))
 
-        title.SetFont(
-            wx.Font(
-                12,
-                wx.FONTFAMILY_DEFAULT,
-                wx.FONTSTYLE_NORMAL,
-                wx.FONTWEIGHT_BOLD
-            )
-        )
+        sizer.Add(title,0,wx.ALL | wx.ALIGN_CENTER,15)
 
-        sizer.Add(
-            title,
-            0,
-            wx.ALL | wx.ALIGN_CENTER,
-            15
-        )
+        check_button = wx.Button(panel,label="Check Now")
+        check_button.Bind(wx.EVT_BUTTON,lambda event: self.execute(self.check_now))
 
-        check_button = wx.Button(
-            panel,
-            label="Check Now"
-        )
+        sizer.Add(check_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
 
-        check_button.Bind(
-            wx.EVT_BUTTON,
-            lambda event: self.execute(self.check_now)
-        )
+        config_button = wx.Button(panel,label="Settings")
+        config_button.Bind(wx.EVT_BUTTON,lambda event: self.execute(self.open_config))
 
-        sizer.Add(
-            check_button,
-            0,
-            wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,
-            10
-        )
+        sizer.Add(config_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
 
-        config_button = wx.Button(
-            panel,
-            label="Settings"
-        )
+        logs_button = wx.Button(panel,label="Open Logs")
+        logs_button.Bind(wx.EVT_BUTTON,lambda event: self.execute(self.open_logs))
 
-        config_button.Bind(
-            wx.EVT_BUTTON,
-            lambda event: self.execute(self.open_config)
-        )
+        sizer.Add(logs_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
 
-        sizer.Add(
-            config_button,
-            0,
-            wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,
-            10
-        )
+        exit_button = wx.Button(panel,label="Close App")
+        exit_button.Bind(wx.EVT_BUTTON,lambda event: self.execute(self.quit_program))
 
-        logs_button = wx.Button(
-            panel,
-            label="Open Logs"
-        )
-
-        logs_button.Bind(
-            wx.EVT_BUTTON,
-            lambda event: self.execute(self.open_logs)
-        )
-
-        sizer.Add(
-            logs_button,
-            0,
-            wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,
-            10
-        )
-
-        exit_button = wx.Button(
-            panel,
-            label="Close App"
-        )
-
-        exit_button.Bind(
-            wx.EVT_BUTTON,
-            lambda event: self.execute(self.quit_program)
-        )
-
-        sizer.Add(
-            exit_button,
-            0,
-            wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,
-            10
-        )
+        sizer.Add(exit_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
 
         panel.SetSizer(sizer)
 
@@ -140,12 +63,7 @@ class TrayMenu(wx.Frame):
         function()
 
     def show_menu(self, x, y):
-
         width, height = self.GetSize()
-
-        self.SetPosition(
-            (x - width, y - height)
-        )
-
+        self.SetPosition((x - width, y - height))
         self.Show()
         self.Raise()

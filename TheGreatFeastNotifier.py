@@ -12,8 +12,6 @@ from utils.logger import log
 from utils.notifier import notification
 from utils.tray import TrayIcon
 
-cfgp.set_paths()
-
 APP_ID = "TheGreatFeastNotifier"
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
 
@@ -54,8 +52,8 @@ SECONDS_PER_SKYBLOCK_DAY = 1200
 DAYS_PER_YEAR = 372
 DAYS_PER_MONTH = 31
 
+cfgp.set_paths()
 load_config()
-
 stop_event = threading.Event()
 
 def failed_request_handler(msg):
@@ -206,12 +204,7 @@ def check_loop():
 
 app = wx.App(False)
 
-tray = TrayIcon(
-    check_now=manual_check,
-    open_config=open_config,
-    open_logs=open_logs,
-    quit_program=quit_program
-)
+tray = TrayIcon(check_now=manual_check,open_config=open_config,open_logs=open_logs,quit_program=quit_program)
 
 threading.Thread(target=check_loop,daemon=True).start()
 
