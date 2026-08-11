@@ -64,6 +64,7 @@ DAYS_PER_MONTH = 31
 cfgp.set_paths()
 load_config()
 stop_event = threading.Event()
+log("[NOTE] Program Started")
 
 def failed_request_handler(msg):
     global failed_requests
@@ -82,8 +83,6 @@ def check_api():
 
     global data
     global failed_requests
-
-    log("[NOTE] Checking Hypixel API...")
     
     try:
         response = requests.get(
@@ -106,7 +105,7 @@ def check_api():
         if failed_requests > 0:
             log(f"[SUCCESS] API request successful after {failed_requests} failed requests")
             if failed_requests >= 10:
-                log("[SUCCESS] Working fine notification sent!")
+                log("[NOTIFICATION] Working fine notification sent!")
                 notification(
                     "Everything Working Just Fine!!!",
                     "Don't matter the problem it's all right now!",
@@ -114,9 +113,6 @@ def check_api():
                     "minecraft-level-up-sound.wav"
                 )
             failed_requests = 0
-        else:
-            log("[NOTE] API request successful.")
-
         return True
 
     except requests.exceptions.Timeout:
@@ -177,7 +173,7 @@ def check_once():
     harvest_feast = 6 <= month <= 8
 
     if finnegan_mayor_grandfeast and not last_mayor_state:
-        log("[DATA_SUCCESS] Finnegan elected with Grand Feast Notification Sent")
+        log("[NOTIFICAION] Finnegan elected with Grand Feast Notification Sent")
         notification(
             "Grand Feast!!!",
             "Finnegan is now the mayor with Grand Feast!",
@@ -186,7 +182,7 @@ def check_once():
         )
 
     if finnegan_running_grandfeast and not last_candidate_state:
-        log("[DATA_SUCCESS] Finnegan running with Grand Feast Notification Sent")
+        log("[NOTIFICATION] Finnegan running with Grand Feast Notification Sent")
         notification(
             "Grand Feast!!! (Probably...)",
             "Finnegan is running with Grand Feast!",
@@ -195,7 +191,7 @@ def check_once():
         )
 
     if harvest_feast and not last_harvest_feast_state:
-        log("[DATA_SUCCESS] Harvest Feast detected and Notification sent.")
+        log("[NOTIFICATION] Harvest Feast detected and Notification sent.")
         notification(
             "Harvest Feast!",
             "It's harvesting season!",
