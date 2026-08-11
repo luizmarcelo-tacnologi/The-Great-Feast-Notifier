@@ -1,5 +1,82 @@
 import wx
 
+class MenuButton(wx.Panel):
+
+    def __init__(self, parent, text, command):
+        super().__init__(parent)
+
+        self.text = text
+        self.command = command
+        self.hovered = False
+        self.pressed = False
+
+        self.normal_colour = wx.Colour(255, 255, 255)
+        self.hover_colour = wx.Colour(230, 230, 230)
+        self.pressed_colour = wx.Colour(210, 210, 210)
+        self.text_colour = wx.Colour(30, 30, 30)
+
+        self.SetMinSize((-1, 40))
+        self.SetBackgroundStyle(wx.BG_STYLE_PAINT)
+
+        # Mouse events
+        self.Bind(wx.EVT_PAINT, self.on_paint)
+        self.Bind(wx.EVT_ENTER_WINDOW, self.on_enter)
+        self.Bind(wx.EVT_LEAVE_WINDOW, self.on_leave)
+        self.Bind(wx.EVT_LEFT_DOWN, self.on_left_down)
+        self.Bind(wx.EVT_LEFT_UP, self.on_left_up)
+
+    def on_paint(self, event):
+
+        dc = wx.AutoBufferedPaintDC(self)
+        if self.pressed:
+            background = self.pressed_colour
+
+        elif self.hovered:
+            background = self.hover_colour
+
+        else:
+            background = self.normal_colour
+
+        dc.SetBackground(wx.Brush(background))
+
+        width, height = self.GetClientSize()
+        text_width, text_height = dc.GetTextExtent(self.text)
+        x = 15
+        y = (height - text_height) // 2
+
+        dc.SetBrush(wx.Brush(background))
+        dc.SetPen(wx.TRANSPARENT_PEN)
+        dc.DrawRoundedRectangle(0,0,width,height,6)
+
+        dc.SetTextForeground(self.text_colour)
+        font = wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL)
+        dc.SetFont(font)
+        dc.DrawText(self.text,x,y)
+
+    def on_enter(self, event):
+        self.hovered = True
+        self.Refresh()
+        event.Skip()
+
+    def on_leave(self, event):
+        self.hovered = False
+        self.pressed = False
+        self.Refresh()
+        event.Skip()
+
+    def on_left_down(self, event):
+        self.pressed = True
+        self.Refresh()
+        event.Skip()
+
+    def on_left_up(self, event):
+        was_pressed = self.pressed
+        self.pressed = False
+        self.Refresh()
+        if was_pressed and self.hovered:
+            self.command()
+        event.Skip()
+
 class TrayMenu(wx.Frame):
 
     def __init__(self,check_now,open_config,open_logs,quit_program):
@@ -27,23 +104,19 @@ class TrayMenu(wx.Frame):
 
         sizer.Add(title,0,wx.ALL | wx.ALIGN_CENTER,15)
 
-        check_button = wx.Button(panel,label="Check Now")
-        check_button.Bind(wx.EVT_BUTTON,lambda event: self.execute(self.check_now))
+        check_button = MenuButton(panel,"Check Now",lambda: self.execute(self.check_now))
 
         sizer.Add(check_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
 
-        config_button = wx.Button(panel,label="Settings")
-        config_button.Bind(wx.EVT_BUTTON,lambda event: self.execute(self.open_config))
+        config_button = MenuButton(panel,"Settings",lambda: self.execute(self.open_config))
 
         sizer.Add(config_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
 
-        logs_button = wx.Button(panel,label="Open Logs")
-        logs_button.Bind(wx.EVT_BUTTON,lambda event: self.execute(self.open_logs))
+        logs_button = MenuButton(panel,"Logs",lambda: self.execute(self.open_logs))
 
         sizer.Add(logs_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
 
-        exit_button = wx.Button(panel,label="Close App")
-        exit_button.Bind(wx.EVT_BUTTON,lambda event: self.execute(self.quit_program))
+        exit_button = MenuButton(panel,"Close Program",lambda: self.execute(self.quit_program))
 
         sizer.Add(exit_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
 

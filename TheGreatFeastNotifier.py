@@ -208,16 +208,8 @@ def check_once():
     last_harvest_feast_state = harvest_feast
 
 def check_loop():
-    
-    global running
-    global last_mayor_state
-    global last_candidate_state
-    global last_harvest_feast_state
-
     while not stop_event.is_set():
-
         check_once()
-        
         stop_event.wait(CHECK_INTERVAL)
 
 app = wx.App(False)

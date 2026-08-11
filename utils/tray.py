@@ -16,5 +16,8 @@ class TrayIcon(wx.adv.TaskBarIcon):
         self.Bind(wx.adv.EVT_TASKBAR_LEFT_UP,self.on_left_click)
 
     def on_left_click(self, event):
+        if self.menu.IsShown():
+            self.menu.Hide()
+            return
         x, y = wx.GetMousePosition()
         self.menu.show_menu(x, y)
