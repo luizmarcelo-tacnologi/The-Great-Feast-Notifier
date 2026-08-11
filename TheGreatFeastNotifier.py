@@ -160,15 +160,15 @@ def check_once():
             if mayor_perk['name'] == 'Grand Feast':
                 finnegan_mayor_grandfeast = True
 
-    try:
-
+    candidates = data.get("current", {}).get("candidates")
+    if candidates is None:
+        log("[DATA_WARNING] No data for next election's candidates!")
+    else:
         for candidate in data['current']['candidates']:
             if candidate['name'] == 'Finnegan':
                 for candidate_perk in candidate['perks']:
                     if candidate_perk['name'] == 'Grand Feast':
                         finnegan_running_grandfeast = True
-    except:
-        log("[DATA_WARNING] No data for next election's candidates!")
 
     now = time.time()
     skyblock_days = (now - SKYBLOCK_EPOCH) // SECONDS_PER_SKYBLOCK_DAY
