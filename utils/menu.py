@@ -2,7 +2,7 @@ import wx
 
 class MenuButton(wx.Panel):
 
-    def __init__(self, parent, text, command):
+    def __init__(self,parent,text,command,normal_colour=None,hover_colour=None,pressed_colour=None,text_colour=None):
         super().__init__(parent)
 
         self.text = text
@@ -11,10 +11,10 @@ class MenuButton(wx.Panel):
         self.pressed = False
 
         self.panel_colour = wx.Colour(32, 32, 32)
-        self.normal_colour = wx.Colour(45, 45, 45)
-        self.hover_colour = wx.Colour(56, 56, 56)
-        self.pressed_colour = wx.Colour(65, 65, 65)
-        self.text_colour = wx.Colour(207, 207, 207)
+        self.normal_colour = normal_colour or wx.Colour(45, 45, 45)
+        self.hover_colour = hover_colour or wx.Colour(56, 56, 56)
+        self.pressed_colour = pressed_colour or wx.Colour(65, 65, 65)
+        self.text_colour = text_colour or wx.Colour(207, 207, 207)
 
         self.SetBackgroundColour(self.panel_colour)
         self.SetMinSize((-1, 25))
@@ -122,9 +122,21 @@ class TrayMenu(wx.Frame):
 
         sizer.Add(close_menu_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
-        exit_button = MenuButton(panel,"Stop Program",lambda: self.execute(self.quit_program))
+        separator = wx.Panel(panel)
+        separator.SetBackgroundColour(wx.Colour(65,65,65))
+        separator.SetMinSize((-1, 1))
 
-        sizer.Add(exit_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
+        sizer.Add(separator,0,wx.EXPAND | wx.LEFT | wx.RIGHT,20)
+
+        sizer.AddSpacer(10)
+
+        quit_button = MenuButton(panel,"Stop Program",lambda: self.execute(self.quit_program),
+            normal_colour=wx.Colour(50,16,16),
+            hover_colour=wx.Colour(100,0,0),
+            pressed_colour=wx.Colour(195,1,1),
+            text_colour=wx.Colour(255,50,50))
+
+        sizer.Add(quit_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
         panel.SetSizer(sizer)
 
