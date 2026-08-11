@@ -10,15 +10,16 @@ class MenuButton(wx.Panel):
         self.hovered = False
         self.pressed = False
 
-        self.normal_colour = wx.Colour(45,45,45)
-        self.hover_colour = wx.Colour(56,56,56)
-        self.pressed_colour = wx.Colour(65,65,65)
-        self.text_colour = wx.Colour(207,207,207)
+        self.panel_colour = wx.Colour(32, 32, 32)
+        self.normal_colour = wx.Colour(45, 45, 45)
+        self.hover_colour = wx.Colour(56, 56, 56)
+        self.pressed_colour = wx.Colour(65, 65, 65)
+        self.text_colour = wx.Colour(207, 207, 207)
 
+        self.SetBackgroundColour(self.panel_colour)
         self.SetMinSize((-1, 40))
         self.SetBackgroundStyle(wx.BG_STYLE_PAINT)
 
-        # Mouse events
         self.Bind(wx.EVT_PAINT, self.on_paint)
         self.Bind(wx.EVT_ENTER_WINDOW, self.on_enter)
         self.Bind(wx.EVT_LEAVE_WINDOW, self.on_leave)
@@ -28,29 +29,28 @@ class MenuButton(wx.Panel):
     def on_paint(self, event):
 
         dc = wx.AutoBufferedPaintDC(self)
+        # Paint the area around the rounded rectangle
+        dc.SetBackground(wx.Brush(self.panel_colour))
+        dc.Clear()
+
         if self.pressed:
             background = self.pressed_colour
-
         elif self.hovered:
             background = self.hover_colour
-
         else:
             background = self.normal_colour
 
-        dc.SetBackground(wx.Brush(background))
-
         width, height = self.GetClientSize()
-        text_width, text_height = dc.GetTextExtent(self.text)
-        x = 15
-        y = (height - text_height) // 2
-
         dc.SetBrush(wx.Brush(background))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRoundedRectangle(0,0,width,height,6)
+        dc.DrawRoundedRectangle(0, 0,width, height,6)
 
         dc.SetTextForeground(self.text_colour)
         font = wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL)
         dc.SetFont(font)
+        text_width, text_height = dc.GetTextExtent(self.text)
+        x = 15
+        y = (height - text_height) // 2
         dc.DrawText(self.text,x,y)
 
     def on_enter(self, event):
@@ -88,7 +88,7 @@ class TrayMenu(wx.Frame):
         self.open_logs = open_logs
         self.quit_program = quit_program
 
-        self.SetSize((180, 250))
+        self.SetSize((220, 250))
         self.create_menu()
         self.Hide()
 
@@ -100,6 +100,7 @@ class TrayMenu(wx.Frame):
         sizer = wx.BoxSizer(wx.VERTICAL)
 
         title = wx.StaticText(panel,label="The Great Feast Notifier")
+        title.SetForegroundColour(wx.Colour(255, 255, 255))
         title.SetFont(wx.Font(12,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_BOLD))
 
         sizer.Add(title,0,wx.ALL | wx.ALIGN_CENTER,15)
