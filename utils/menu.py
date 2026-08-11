@@ -1,12 +1,14 @@
 import wx
+from utils.configpath import resource_path
 
 class MenuButton(wx.Panel):
 
-    def __init__(self,parent,text,command,normal_colour=None,hover_colour=None,pressed_colour=None,text_colour=None):
+    def __init__(self,parent,text,command,icon=None,normal_colour=None,hover_colour=None,pressed_colour=None,text_colour=None):
         super().__init__(parent)
 
         self.text = text
         self.command = command
+        self.icon = icon
         self.hovered = False
         self.pressed = False
 
@@ -43,15 +45,31 @@ class MenuButton(wx.Panel):
         width, height = self.GetClientSize()
         dc.SetBrush(wx.Brush(background))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRoundedRectangle(0, 0,width, height,6)
-
+        dc.DrawRoundedRectangle(0,0,width,height,6)
         dc.SetTextForeground(self.text_colour)
         font = wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL)
         dc.SetFont(font)
         text_width, text_height = dc.GetTextExtent(self.text)
-        x = 15
-        y = (height - text_height) // 2
-        dc.DrawText(self.text,x,y)
+
+        if self.icon:
+            icon_width = self.icon.GetWidth()
+            icon_height = self.icon.GetHeight()
+
+            spacing = 8
+            left_margin = 15
+
+            icon_x = left_margin
+            icon_y = (height - icon_height) // 2
+
+            text_x = icon_x + icon_width + spacing
+            text_y = (height - text_height) // 2
+            
+            dc.DrawBitmap(self.icon,icon_x,icon_y,True)
+            dc.DrawText(self.text,text_x,text_y)
+        else:
+            x = (width - text_width) // 2
+            y = (height - text_height) // 2
+            dc.DrawText(self.text,x,y)
 
     def on_enter(self, event):
         self.hovered = True
@@ -106,19 +124,19 @@ class TrayMenu(wx.Frame):
 
         sizer.Add(title,0,wx.ALL | wx.ALIGN_CENTER,15)
 
-        check_button = MenuButton(panel,"Check Now",lambda: self.execute(self.check_now))
+        check_button = MenuButton(panel,"Check Now",lambda: self.execute(self.check_now),wx.Bitmap(resource_path("icons/check.png"),wx.BITMAP_TYPE_PNG))
 
         sizer.Add(check_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
-        config_button = MenuButton(panel,"Settings",lambda: self.execute(self.open_config))
+        config_button = MenuButton(panel,"Settings",lambda: self.execute(self.open_config),wx.Bitmap(resource_path("icons/settings.png"),wx.BITMAP_TYPE_PNG))
 
         sizer.Add(config_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
-        logs_button = MenuButton(panel,"Logs",lambda: self.execute(self.open_logs))
+        logs_button = MenuButton(panel,"Logs",lambda: self.execute(self.open_logs),wx.Bitmap(resource_path("icons/log.png"),wx.BITMAP_TYPE_PNG))
 
         sizer.Add(logs_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
-        close_menu_button = MenuButton(panel,"Exit",lambda: self.Hide())
+        close_menu_button = MenuButton(panel,"Exit",lambda: self.Hide(),wx.Bitmap(resource_path("icons/exit.png"),wx.BITMAP_TYPE_PNG))
 
         sizer.Add(close_menu_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
@@ -134,7 +152,8 @@ class TrayMenu(wx.Frame):
             normal_colour=wx.Colour(50,16,16),
             hover_colour=wx.Colour(100,0,0),
             pressed_colour=wx.Colour(195,1,1),
-            text_colour=wx.Colour(255,50,50))
+            text_colour=wx.Colour(255,50,50),
+            icon=wx.Bitmap(resource_path("icons/quit.png"),wx.BITMAP_TYPE_PNG))
 
         sizer.Add(quit_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
