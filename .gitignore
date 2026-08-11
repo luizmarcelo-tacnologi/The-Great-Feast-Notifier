@@ -1,7 +1,5 @@
-logs.txt
 dist/
 build/
+TheGreatFeastNotifier.spec
 __pycache__/
 utils/__pycache__/
-TheGreatFeastNotifier.spec
-config.json

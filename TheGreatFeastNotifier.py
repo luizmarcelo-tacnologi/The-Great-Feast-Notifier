@@ -6,6 +6,7 @@ import ctypes
 import subprocess
 import wx
 from datetime import datetime
+import os
 
 # ultils files
 import utils.configpath as cfgp
@@ -20,6 +21,18 @@ def load_config():
     global config
     global API_KEY
     global CHECK_INTERVAL
+    global set_key_warning
+
+    if not os.path.exists(cfgp.config_path):
+        set_key_warning = True
+        create_default_config()
+        log("[ERROR] No API Key set!")
+        notification(
+            "Set your API key on the Settings!",
+            "A Hypixel Skyblock API key is required to the program to function! Set one on the Settings!",
+            "Error.png",
+            "minecraft-level-up-sound.wav"
+        )
 
     with open(cfgp.config_path, "r") as file:
         config = json.load(file)
@@ -38,10 +51,12 @@ def manual_check():
     global last_mayor_state
     global last_candidate_state
     global last_harvest_feast_state
+    global set_key_warning
 
     last_mayor_state = False
     last_candidate_state = False
     last_harvest_feast_state = False
+    set_key_warning = False
 
     log("[NOTE] Manual Checking!")
     check_once()
@@ -51,6 +66,18 @@ def quit_program():
     stop_event.set()
     wx.CallAfter(wx.GetApp().ExitMainLoop)
 
+def create_default_config():
+
+    default_config = {
+        "Expiration_Date": "",
+        "api_key": "",
+        "check_interval": 300
+    }
+
+    with open(cfgp.config_path, "w", encoding="utf-8") as file:
+        json.dump(default_config, file, indent=4)
+
+set_key_warning = False
 last_elections_cooldown = False
 last_mayor_state = False
 last_candidate_state = False
@@ -86,13 +113,26 @@ def failed_request_handler(msg):
             "Major Failed Request Streak!!!",
             "Check the logs to see what is wrong!",
             "Error.png",
-            "minecraft-level-up-sound"
+            "minecraft-level-up-sound.wav"
         )
 
 def check_api():
 
     global data
     global failed_requests
+    global set_key_warning
+
+    if API_KEY == "":
+        if not set_key_warning:
+            log("[ERROR] No API Key set!")
+            notification(
+                "Set your API key on the Settings!",
+                "A Hypixel Skyblock API key is required to the program to function! Set one on the Settings!",
+                "Error.png",
+                "minecraft-level-up-sound.wav"
+            )
+        set_key_warning = True
+        return False
     
     try:
         response = requests.get(
@@ -196,7 +236,7 @@ def check_once():
             "Grand Feast!!!",
             "Finnegan is now the mayor with Grand Feast!",
             "banner.png",
-            "minecraft-level-up-sound"
+            "minecraft-level-up-sound.wav"
         )
 
     if finnegan_running_grandfeast and not last_candidate_state:
@@ -205,7 +245,7 @@ def check_once():
             "Grand Feast!!! (Probably...)",
             "Finnegan is running with Grand Feast!",
             "banner.png",
-            "minecraft-level-up-sound"
+            "minecraft-level-up-sound.wav"
         )
 
     if harvest_feast and not last_harvest_feast_state:
@@ -214,7 +254,7 @@ def check_once():
             "Harvest Feast!",
             "It's harvesting season!",
             "banner.png",
-            "minecraft-level-up-sound"
+            "minecraft-level-up-sound.wav"
         )
 
     last_mayor_state = finnegan_mayor_grandfeast
