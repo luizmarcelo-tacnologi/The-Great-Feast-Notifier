@@ -33,6 +33,15 @@ def open_logs():
     subprocess.Popen(["notepad.exe", cfgp.log_path])
 
 def manual_check():
+
+    global last_mayor_state
+    global last_candidate_state
+    global last_harvest_feast_state
+
+    last_mayor_state = False
+    last_candidate_state = False
+    last_harvest_feast_state = False
+
     log("[NOTE] Manual Checking!")
     check_once()
 
@@ -85,50 +94,55 @@ def check_api():
     
         response.raise_for_status()
     
-        data = response.json()
+        new_data = response.json()
     
-        if not data.get("success", False):
-            cause = data.get("cause", "Unknown reason")
+        if not new_data.get("success", False):
+            cause = new_data.get("cause", "Unknown reason")
             failed_request_handler(f"[WARNING] Hypixel API rejected the request: {cause}")
-            return
-        else:
-            if failed_requests > 0:
-                log(f"[SUCCESS] API request successful after {failed_requests} failed requests")
-                failed_requests = 0
+            return False
+
+        data = new_data
+        
+        if failed_requests > 0:
+            log(f"[SUCCESS] API request successful after {failed_requests} failed requests")
+            if failed_requests >= 10:
+                log("[SUCCESS] Working fine notification sent!")
                 notification(
                     "Everything Working Just Fine!!!",
                     "Don't matter the problem it's all right now!",
                     "banner.png",
                     "minecraft-level-up-sound.wav"
                 )
-            else:
-                log("[NOTE] API request successful.")
-                failed_requests = 0
+            failed_requests = 0
+        else:
+            log("[NOTE] API request successful.")
+
+        return True
 
     except requests.exceptions.Timeout:
         failed_request_handler("[WARNING] Request timed out.")
-        return
+        return False
 
     except requests.exceptions.ConnectionError:
         failed_request_handler("[WARNING] Could not connect to the Hypixel API.")
-        return
+        return False
     
     except requests.exceptions.HTTPError as e:
         failed_request_handler(f"[WARNING] HTTP {response.status_code} - {e}")
-        return
+        return False
 
     except requests.exceptions.RequestException as e:
         failed_request_handler(f"[WARNING] Request failed: {e}")
-        return
+        return False
 
     except Exception as e:
         failed_request_handler(f"[WARNING] {e}")
-        return
-            
-    print(data)
+        return False
 
 def check_once():
+
     load_config()
+
     global last_mayor_state
     global last_candidate_state
     global last_harvest_feast_state
@@ -136,8 +150,10 @@ def check_once():
 
     finnegan_mayor_grandfeast = False
     finnegan_running_grandfeast = False
+    harvest_feast = False
 
-    check_api()
+    if not check_api():
+        return
 
     if data['mayor']['name'] == 'Finnegan':
         for mayor_perk in data['mayor']['perks']:
@@ -192,10 +208,12 @@ def check_once():
     last_harvest_feast_state = harvest_feast
 
 def check_loop():
+    
     global running
     global last_mayor_state
     global last_candidate_state
     global last_harvest_feast_state
+
     while not stop_event.is_set():
 
         check_once()
