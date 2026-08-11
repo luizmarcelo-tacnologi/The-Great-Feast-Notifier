@@ -10,10 +10,10 @@ class MenuButton(wx.Panel):
         self.hovered = False
         self.pressed = False
 
-        self.normal_colour = wx.Colour(255, 255, 255)
-        self.hover_colour = wx.Colour(230, 230, 230)
-        self.pressed_colour = wx.Colour(210, 210, 210)
-        self.text_colour = wx.Colour(30, 30, 30)
+        self.normal_colour = wx.Colour(45,45,45)
+        self.hover_colour = wx.Colour(56,56,56)
+        self.pressed_colour = wx.Colour(65,65,65)
+        self.text_colour = wx.Colour(207,207,207)
 
         self.SetMinSize((-1, 40))
         self.SetBackgroundStyle(wx.BG_STYLE_PAINT)
@@ -95,7 +95,7 @@ class TrayMenu(wx.Frame):
     def create_menu(self):
 
         panel = wx.Panel(self)
-        panel.SetBackgroundColour(wx.WHITE)
+        panel.SetBackgroundColour(wx.Colour(32,32,32))
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
