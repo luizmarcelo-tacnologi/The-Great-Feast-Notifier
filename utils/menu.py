@@ -17,7 +17,7 @@ class MenuButton(wx.Panel):
         self.text_colour = wx.Colour(207, 207, 207)
 
         self.SetBackgroundColour(self.panel_colour)
-        self.SetMinSize((-1, 40))
+        self.SetMinSize((-1, 25))
         self.SetBackgroundStyle(wx.BG_STYLE_PAINT)
 
         self.Bind(wx.EVT_PAINT, self.on_paint)
@@ -118,7 +118,11 @@ class TrayMenu(wx.Frame):
 
         sizer.Add(logs_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
-        exit_button = MenuButton(panel,"Close Program",lambda: self.execute(self.quit_program))
+        close_menu_button = MenuButton(panel,"Exit",lambda: self.Hide())
+
+        sizer.Add(close_menu_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
+
+        exit_button = MenuButton(panel,"Stop Program",lambda: self.execute(self.quit_program))
 
         sizer.Add(exit_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
