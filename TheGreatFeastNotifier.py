@@ -94,6 +94,12 @@ cfgp.set_paths()
 load_config()
 stop_event = threading.Event()
 log("[NOTE] Program Started")
+notification(
+"The searching started!",
+"You will get notitfied when any Feast is detected!",
+"banner.png",
+"minecraft-level-up-sound.wav"
+)
 
 def update_status(success):
     current_time = datetime.now().strftime("%H:%M:%S")
