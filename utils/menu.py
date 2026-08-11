@@ -29,7 +29,7 @@ class MenuButton(wx.Panel):
     def on_paint(self, event):
 
         dc = wx.AutoBufferedPaintDC(self)
-        # Paint the area around the rounded rectangle
+
         dc.SetBackground(wx.Brush(self.panel_colour))
         dc.Clear()
 
@@ -81,7 +81,7 @@ class TrayMenu(wx.Frame):
 
     def __init__(self,check_now,open_config,open_logs,quit_program):
 
-        super().__init__(None,style=wx.FRAME_NO_TASKBAR |wx.STAY_ON_TOP |wx.BORDER_NONE)
+        super().__init__(None,style=wx.FRAME_NO_TASKBAR |wx.STAY_ON_TOP |wx.BORDER_NONE |wx.FRAME_SHAPED)
 
         self.check_now = check_now
         self.open_config = open_config
@@ -89,6 +89,7 @@ class TrayMenu(wx.Frame):
         self.quit_program = quit_program
 
         self.SetSize((220, 250))
+        self.Bind(wx.EVT_SIZE, self.on_size)
         self.create_menu()
         self.Hide()
 
@@ -107,30 +108,53 @@ class TrayMenu(wx.Frame):
 
         check_button = MenuButton(panel,"Check Now",lambda: self.execute(self.check_now))
 
-        sizer.Add(check_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
+        sizer.Add(check_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
         config_button = MenuButton(panel,"Settings",lambda: self.execute(self.open_config))
 
-        sizer.Add(config_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
+        sizer.Add(config_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
         logs_button = MenuButton(panel,"Logs",lambda: self.execute(self.open_logs))
 
-        sizer.Add(logs_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
+        sizer.Add(logs_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
         exit_button = MenuButton(panel,"Close Program",lambda: self.execute(self.quit_program))
 
-        sizer.Add(exit_button,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,10)
+        sizer.Add(exit_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
         panel.SetSizer(sizer)
 
-        # Make the panel fill the entire frame.
         frame_sizer = wx.BoxSizer(wx.VERTICAL)
         frame_sizer.Add(panel, 1, wx.EXPAND)
 
         self.SetSizer(frame_sizer)
-
-        # Make sure the sizer calculates the correct sizes.
         self.Layout()
+        self.set_rounded_shape()
+
+    def set_rounded_shape(self):
+
+        width, height = self.GetClientSize()
+        if width <= 0 or height <= 0:
+            return
+        
+        radius = 6
+        bitmap = wx.Bitmap(width,height,1)
+        dc = wx.MemoryDC(bitmap)
+
+        dc.SetBackground(wx.Brush(wx.WHITE))
+        dc.Clear()
+        dc.SetBrush(wx.Brush(wx.BLACK))
+        dc.SetPen(wx.TRANSPARENT_PEN)
+        dc.DrawRoundedRectangle(0,0,width,height,radius)
+        dc.SelectObject(wx.NullBitmap)
+
+        region = wx.Region(bitmap,wx.WHITE)
+
+        self.SetShape(region)
+
+    def on_size(self, event):
+        event.Skip()
+        self.set_rounded_shape()
 
     def execute(self, function):
         self.Hide()
@@ -138,6 +162,6 @@ class TrayMenu(wx.Frame):
 
     def show_menu(self, x, y):
         width, height = self.GetSize()
-        self.SetPosition((x - width, y - height))
+        self.SetPosition((x - width,y - height))
         self.Show()
         self.Raise()
