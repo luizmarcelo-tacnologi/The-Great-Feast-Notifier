@@ -50,6 +50,7 @@ def quit_program():
     stop_event.set()
     wx.CallAfter(wx.GetApp().ExitMainLoop)
 
+last_elections_cooldown = False
 last_mayor_state = False
 last_candidate_state = False
 last_harvest_feast_state = False
@@ -139,11 +140,13 @@ def check_once():
 
     load_config()
 
+    global last_elections_cooldown
     global last_mayor_state
     global last_candidate_state
     global last_harvest_feast_state
     global data
 
+    elections_cooldown = False
     finnegan_mayor_grandfeast = False
     finnegan_running_grandfeast = False
     harvest_feast = False
@@ -158,7 +161,11 @@ def check_once():
 
     candidates = data.get("current", {}).get("candidates")
     if candidates is None:
-        log("[DATA_WARNING] No data for next election's candidates!")
+        if last_elections_cooldown:
+            elections_cooldown = True
+        else:
+            elections_cooldown = True
+            log("[DATA_WARNING] No data for next election's candidates!")
     else:
         for candidate in data['current']['candidates']:
             if candidate['name'] == 'Finnegan':
@@ -173,7 +180,7 @@ def check_once():
     harvest_feast = 6 <= month <= 8
 
     if finnegan_mayor_grandfeast and not last_mayor_state:
-        log("[NOTIFICAION] Finnegan elected with Grand Feast Notification Sent")
+        log("[NOTIFICATION] Finnegan elected with Grand Feast Notification Sent")
         notification(
             "Grand Feast!!!",
             "Finnegan is now the mayor with Grand Feast!",
@@ -202,6 +209,7 @@ def check_once():
     last_mayor_state = finnegan_mayor_grandfeast
     last_candidate_state = finnegan_running_grandfeast
     last_harvest_feast_state = harvest_feast
+    last_elections_cooldown = elections_cooldown
 
 def check_loop():
     while not stop_event.is_set():
