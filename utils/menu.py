@@ -136,7 +136,7 @@ class TrayMenu(wx.Frame):
 
         sizer.Add(logs_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
-        close_menu_button = MenuButton(panel,"Exit",lambda: self.Hide(),wx.Bitmap(resource_path("icons/exit.png"),wx.BITMAP_TYPE_PNG))
+        close_menu_button = MenuButton(panel,"Close",lambda: self.Hide(),wx.Bitmap(resource_path("icons/exit.png"),wx.BITMAP_TYPE_PNG))
 
         sizer.Add(close_menu_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
 
@@ -147,6 +147,20 @@ class TrayMenu(wx.Frame):
         sizer.Add(separator,0,wx.EXPAND | wx.LEFT | wx.RIGHT,20)
 
         sizer.AddSpacer(10)
+
+        last_checked_title = wx.StaticText(panel, label="Last checked")
+        last_checked_title.SetForegroundColour(wx.Colour(150, 150, 150))
+        last_checked_title.SetFont(
+        wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL))
+
+        sizer.Add(last_checked_title,0,wx.LEFT | wx.RIGHT,20)
+
+        self.status_label = wx.StaticText(panel, label="Never • Not checked")
+        self.status_label.SetForegroundColour(wx.Colour(207, 207, 207))
+        self.status_label.SetFont(
+        wx.Font(9,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL))
+
+        sizer.Add(self.status_label,0,wx.LEFT | wx.RIGHT | wx.BOTTOM,20)
 
         quit_button = MenuButton(panel,"Stop Program",lambda: self.execute(self.quit_program),
             normal_colour=wx.Colour(50,16,16),
@@ -164,6 +178,10 @@ class TrayMenu(wx.Frame):
 
         self.SetSizer(frame_sizer)
         self.Layout()
+
+        best_size = frame_sizer.CalcMin()
+        self.SetSize((220, best_size.height))
+
         self.set_rounded_shape()
 
     def set_rounded_shape(self):
@@ -186,6 +204,14 @@ class TrayMenu(wx.Frame):
         region = wx.Region(bitmap,wx.WHITE)
 
         self.SetShape(region)
+
+    def update_status(self, time, status):
+        self.status_label.SetLabel(f"{time} • {status}")
+        if status == "Connected":
+            self.status_label.SetForegroundColour(wx.Colour(100, 200, 100))
+        else:
+            self.status_label.SetForegroundColour(wx.Colour(255, 100, 100))
+        self.status_label.Refresh()
 
     def on_size(self, event):
         event.Skip()

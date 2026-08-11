@@ -5,6 +5,7 @@ import threading
 import ctypes
 import subprocess
 import wx
+from datetime import datetime
 
 # ultils files
 import utils.configpath as cfgp
@@ -66,6 +67,14 @@ cfgp.set_paths()
 load_config()
 stop_event = threading.Event()
 log("[NOTE] Program Started")
+
+def update_status(success):
+    current_time = datetime.now().strftime("%H:%M:%S")
+    if success:
+        status = "Connected"
+    else:
+        status = "Connection failed"
+    tray.menu.update_status(current_time, status)
 
 def failed_request_handler(msg):
     global failed_requests
@@ -151,7 +160,9 @@ def check_once():
     finnegan_running_grandfeast = False
     harvest_feast = False
 
-    if not check_api():
+    success_api_check = check_api()
+    wx.CallAfter(update_status, success_api_check)
+    if not success_api_check:
         return
 
     if data['mayor']['name'] == 'Finnegan':
