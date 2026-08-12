@@ -1,5 +1,4 @@
 PROBLEMS TO SOLVE
-	startup notification overlaping with error notification, the startup notification should only happen if no error is found
 	check if the harvest feast calculations are actually working
 PLANS FOR THE FUTURE
 	config a proper installer for the program

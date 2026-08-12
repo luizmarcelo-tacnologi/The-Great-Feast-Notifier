@@ -26,13 +26,6 @@ def load_config():
     if not os.path.exists(cfgp.config_path):
         set_key_warning = True
         create_default_config()
-        log("[ERROR] No API Key set!")
-        notification(
-            "Set your API key on the Settings!",
-            "A Hypixel Skyblock API key is required to the program to function! Set one on the Settings!",
-            "Error.png",
-            "minecraft-level-up-sound.wav"
-        )
 
     with open(cfgp.config_path, "r") as file:
         config = json.load(file)
@@ -69,7 +62,7 @@ def quit_program():
 def create_default_config():
 
     default_config = {
-        "Expiration_Date": "",
+        "expiration_date": "",
         "api_key": "",
         "check_interval": 300
     }
@@ -77,6 +70,7 @@ def create_default_config():
     with open(cfgp.config_path, "w", encoding="utf-8") as file:
         json.dump(default_config, file, indent=4)
 
+startup_notification = False
 set_key_warning = False
 last_elections_cooldown = False
 last_mayor_state = False
@@ -94,12 +88,6 @@ cfgp.set_paths()
 load_config()
 stop_event = threading.Event()
 log("[NOTE] Program Started")
-notification(
-"The searching started!",
-"You will get notitfied when any Feast is detected!",
-"banner.png",
-"minecraft-level-up-sound.wav"
-)
 
 def update_status(success):
     current_time = datetime.now().strftime("%H:%M:%S")
@@ -195,6 +183,7 @@ def check_once():
 
     load_config()
 
+    global startup_notification
     global last_elections_cooldown
     global last_mayor_state
     global last_candidate_state
@@ -217,12 +206,9 @@ def check_once():
                 finnegan_mayor_grandfeast = True
 
     candidates = data.get("current", {}).get("candidates")
-    if candidates is None:
-        if last_elections_cooldown:
-            elections_cooldown = True
-        else:
-            elections_cooldown = True
-            log("[DATA_WARNING] No data for next election's candidates!")
+    if candidates is None and not last_elections_cooldown:
+        elections_cooldown = True
+        log("[DATA_WARNING] No data for next election's candidates!")
     else:
         for candidate in data['current']['candidates']:
             if candidate['name'] == 'Finnegan':
@@ -263,10 +249,20 @@ def check_once():
             "minecraft-level-up-sound.wav"
         )
 
+    if not (finnegan_mayor_grandfeast or finnegan_running_grandfeast or harvest_feast or startup_notification):
+        notification(
+            "The searching started!",
+            "You will get notitfied when any Feast is detected!",
+            "banner.png",
+            "minecraft-level-up-sound.wav"
+            )
+        startup_notification = True
+
     last_mayor_state = finnegan_mayor_grandfeast
     last_candidate_state = finnegan_running_grandfeast
     last_harvest_feast_state = harvest_feast
     last_elections_cooldown = elections_cooldown
+    startup_notification = True
 
 def check_loop():
     while not stop_event.is_set():
