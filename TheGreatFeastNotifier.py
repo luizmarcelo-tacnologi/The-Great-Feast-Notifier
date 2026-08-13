@@ -115,6 +115,7 @@ def check_api():
     global data
     global failed_requests
     global set_key_warning
+    global startup_notification
 
     if API_KEY == "":
         if not set_key_warning:
@@ -150,6 +151,7 @@ def check_api():
             log(f"[SUCCESS] API request successful after {failed_requests} failed requests")
             if failed_requests >= 10:
                 log("[NOTIFICATION] Working fine notification sent!")
+                startup_notification = True
                 notification(
                     "Everything Working Just Fine!!!",
                     "Don't matter the problem it's all right now!",
@@ -183,6 +185,7 @@ def check_once():
 
     load_config()
 
+    global failed_requests
     global startup_notification
     global last_elections_cooldown
     global last_mayor_state
@@ -198,6 +201,13 @@ def check_once():
     success_api_check = check_api()
     wx.CallAfter(update_status, success_api_check)
     if not success_api_check:
+        if not startup_notification and failed_requests == 1:
+            notification(
+                "Not Initialized Correctly!!!",
+                "Something isn't working! Check the logs!",
+                "Error.png",
+                "minecraft-level-up-sound.wav"
+            )
         return
 
     if data['mayor']['name'] == 'Finnegan':

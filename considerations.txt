@@ -1,8 +1,12 @@
 PROBLEMS TO SOLVE
 	check if the harvest feast calculations are actually working
+	make the menu hide when clicking outside of it
+	create some single instance protection
 PLANS FOR THE FUTURE
-	config a proper installer for the program
-	maybe, just maybe, migrate the GUI to C#, and even less prone to, move the entire thing to C#
-	change the AI banners and icon (Error.png;banner.png;hypixel.ico) to some proper thing, and maybe add some different banners too
-	crate some single instance protection
 	make a somewhat decent logs and settings GUI
+	config a proper installer for the program (with start menu folder, run on startup, and some other usefull features)
+	change the AI banners and icon (Error.png;banner.png;hypixel.ico) to some proper thing, and maybe add some different banners too
+	hunt for things to maybe make the program consume less RAM
+	maybe, just maybe, migrate the GUI to C#, and even less prone to, move the entire thing to C#
+
+
