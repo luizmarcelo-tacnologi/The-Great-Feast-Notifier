@@ -185,6 +185,7 @@ def check_once():
 
     load_config()
 
+    global set_key_warning
     global failed_requests
     global startup_notification
     global last_elections_cooldown
@@ -201,7 +202,7 @@ def check_once():
     success_api_check = check_api()
     wx.CallAfter(update_status, success_api_check)
     if not success_api_check:
-        if not startup_notification and failed_requests == 1:
+        if not startup_notification and failed_requests == 1 and not set_key_warning:
             notification(
                 "Not Initialized Correctly!!!",
                 "Something isn't working! Check the logs!",
