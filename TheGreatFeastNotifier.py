@@ -3,7 +3,6 @@ import time
 import json
 import threading
 import ctypes
-import subprocess
 import wx
 from datetime import datetime
 import os
@@ -13,6 +12,7 @@ import utils.configpath as cfgp
 from utils.logger import log
 from utils.notifier import notification
 from utils.tray import TrayIcon
+from utils.window import SettingsWindow,LogsWindow
 
 APP_ID = "TheGreatFeastNotifier"
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
@@ -34,10 +34,17 @@ def load_config():
     CHECK_INTERVAL = config["check_interval"]
 
 def open_config():
-    subprocess.Popen(["notepad.exe", cfgp.config_path])
+    settings_window.Show()
+    settings_window.Raise()
+
+def save_settings(config):
+    save_config(config)
+    load_config()
 
 def open_logs():
-    subprocess.Popen(["notepad.exe", cfgp.log_path])
+    logs_window.refresh_logs()
+    logs_window.Show()
+    logs_window.Raise()
 
 def manual_check():
 
@@ -69,6 +76,20 @@ def create_default_config():
 
     with open(cfgp.config_path, "w", encoding="utf-8") as file:
         json.dump(default_config, file, indent=4)
+
+def save_config(config):
+
+    with open(
+        cfgp.config_path,
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        json.dump(
+            config,
+            file,
+            indent=4
+        )
 
 startup_notification = False
 set_key_warning = False
@@ -302,6 +323,10 @@ app = wx.App(False)
 instance_checker = wx.SingleInstanceChecker("TheGreatFeastNotifier")
 if instance_checker.IsAnotherRunning():
     raise SystemExit
+
+settings_window = SettingsWindow(config,save_settings)
+
+logs_window = LogsWindow()
 
 tray = TrayIcon(check_now=manual_check,open_config=open_config,open_logs=open_logs,quit_program=quit_program)
 
