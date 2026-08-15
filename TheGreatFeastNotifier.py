@@ -282,6 +282,10 @@ def check_loop():
 
 app = wx.App(False)
 
+instance_checker = wx.SingleInstanceChecker("TheGreatFeastNotifier")
+if instance_checker.IsAnotherRunning():
+    raise SystemExit
+
 tray = TrayIcon(check_now=manual_check,open_config=open_config,open_logs=open_logs,quit_program=quit_program)
 
 threading.Thread(target=check_loop,daemon=True).start()

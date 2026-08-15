@@ -107,6 +107,7 @@ class TrayMenu(wx.Frame):
         self.quit_program = quit_program
 
         self.SetSize((220, 250))
+        self.Bind(wx.EVT_ACTIVATE, self.on_activate)
         self.Bind(wx.EVT_SIZE, self.on_size)
         self.create_menu()
         self.Hide()
@@ -220,6 +221,11 @@ class TrayMenu(wx.Frame):
     def execute(self, function):
         self.Hide()
         function()
+
+    def on_activate(self, event):
+        if not event.GetActive():
+            self.Hide()
+        event.Skip()
 
     def show_menu(self, x, y):
         width, height = self.GetSize()
