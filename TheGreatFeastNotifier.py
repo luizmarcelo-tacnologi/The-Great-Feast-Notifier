@@ -74,6 +74,7 @@ startup_notification = False
 set_key_warning = False
 last_elections_cooldown = False
 last_mayor_state = False
+last_minister_state = False
 last_candidate_state = False
 last_harvest_feast_state = False
 failed_requests = 0
@@ -190,12 +191,14 @@ def check_once():
     global startup_notification
     global last_elections_cooldown
     global last_mayor_state
+    global last_minister_state
     global last_candidate_state
     global last_harvest_feast_state
     global data
 
     elections_cooldown = False
     finnegan_mayor_grandfeast = False
+    finnegan_minister_grandfeast = False
     finnegan_running_grandfeast = False
     harvest_feast = False
 
@@ -216,16 +219,20 @@ def check_once():
             if mayor_perk['name'] == 'Grand Feast':
                 finnegan_mayor_grandfeast = True
 
-    candidates = data.get("current", {}).get("candidates")
-    if candidates is None and not last_elections_cooldown:
-        elections_cooldown = True
-        log("[DATA_WARNING] No data for next election's candidates!")
-    else:
+    if data['mayor']['minister']['perk']['name'] == 'Grand Feast':
+        finnegan_minister_grandfeast = True
+
+    if 'current' in data:
+        elections_cooldown = False
         for candidate in data['current']['candidates']:
             if candidate['name'] == 'Finnegan':
                 for candidate_perk in candidate['perks']:
                     if candidate_perk['name'] == 'Grand Feast':
                         finnegan_running_grandfeast = True
+    else:
+        elections_cooldown = True
+        if not last_elections_cooldown:
+            log("[DATA_WARNING] No data for next election's candidates!")
 
     now = time.time()
     skyblock_days = (now - SKYBLOCK_EPOCH) // SECONDS_PER_SKYBLOCK_DAY
@@ -238,6 +245,15 @@ def check_once():
         notification(
             "Grand Feast!!!",
             "Finnegan is now the mayor with Grand Feast!",
+            "banner.png",
+            "minecraft-level-up-sound.wav"
+        )
+
+    if finnegan_minister_grandfeast and not last_minister_state:
+        log("[NOTIFICATION] Finnegan elected as a minister with Grand Feast Notification Sent")
+        notification(
+            "Grand Feast!!!",
+            "Finnegan is not the mayor, but minister with Grand Feast!",
             "banner.png",
             "minecraft-level-up-sound.wav"
         )
@@ -260,7 +276,7 @@ def check_once():
             "minecraft-level-up-sound.wav"
         )
 
-    if not (finnegan_mayor_grandfeast or finnegan_running_grandfeast or harvest_feast or startup_notification):
+    if not (finnegan_mayor_grandfeast or finnegan_minister_grandfeast or finnegan_running_grandfeast or harvest_feast or startup_notification):
         notification(
             "The searching started!",
             "You will get notitfied when any Feast is detected!",
@@ -270,6 +286,7 @@ def check_once():
         startup_notification = True
 
     last_mayor_state = finnegan_mayor_grandfeast
+    last_minister_state = finnegan_minister_grandfeast
     last_candidate_state = finnegan_running_grandfeast
     last_harvest_feast_state = harvest_feast
     last_elections_cooldown = elections_cooldown
