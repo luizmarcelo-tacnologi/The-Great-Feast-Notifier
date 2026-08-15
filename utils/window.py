@@ -71,6 +71,9 @@ class SettingsWindow(AppWindow):
 
         panel.SetSizer(main_sizer)
 
+        self.api_key.SetSelection(0, 0)
+        self.interval.SetFocus()
+
     def save(self):
         self.config["api_key"] = self.api_key.GetValue()
         self.config["check_interval"] = self.interval.GetValue()
@@ -132,5 +135,5 @@ class LogsWindow(AppWindow):
         self.log_text.ShowPosition(self.log_text.GetLastPosition())
 
     def open_log_file(self):
-        import subprocess
-        subprocess.Popen(["notepad.exe",cfgp.log_path])
+        import os
+        os.startfile(cfgp.log_path)
