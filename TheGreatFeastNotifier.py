@@ -21,7 +21,7 @@ def load_config():
     global config
     global API_KEY
     global CHECK_INTERVAL
-    
+
     if not os.path.exists(cfgp.config_path):
         create_default_config()
 
@@ -328,7 +328,7 @@ logs_window = LogsWindow()
 
 tray = TrayIcon(check_now=manual_check,open_config=open_config,open_logs=open_logs,quit_program=quit_program)
 
-threading.Thread(target=check_loop,daemon=True).start()
+wx.CallAfter(threading.Thread(target=check_loop,daemon=True).start())
 
 app.MainLoop()
 
