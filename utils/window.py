@@ -46,16 +46,16 @@ class SettingsWindow(AppWindow):
 
         main_sizer.Add(self.api_key,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP,25)
 
-        interval_label = wx.StaticText(panel,label="Check interval (seconds)")
+        interval_label = wx.StaticText(panel,label="Check Interval (minutes)")
         interval_label.SetForegroundColour(wx.Colour(207, 207, 207))
 
         main_sizer.Add(interval_label,0,wx.LEFT | wx.RIGHT | wx.TOP,25)
 
-        self.interval = wx.SpinCtrl(panel,min=10,max=86400,initial=self.config.get("check_interval", 300))
+        self.interval = wx.SpinCtrl(panel,min=1,max=1080,initial=self.config.get("check_interval", 300),style=wx.TE_CENTER)
         self.interval.SetBackgroundColour(wx.Colour(45, 45, 45))
         self.interval.SetForegroundColour(wx.Colour(230, 230, 230))
 
-        main_sizer.Add(self.interval,0,wx.LEFT | wx.RIGHT | wx.TOP,25)
+        main_sizer.Add(self.interval,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP,25)
 
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
 

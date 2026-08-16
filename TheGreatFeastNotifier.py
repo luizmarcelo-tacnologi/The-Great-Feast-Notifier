@@ -71,7 +71,7 @@ def create_default_config():
     default_config = {
         "expiration_date": "",
         "api_key": "",
-        "check_interval": 300
+        "check_interval": 5
     }
 
     with open(cfgp.config_path, "w", encoding="utf-8") as file:
@@ -316,7 +316,7 @@ def check_once():
 def check_loop():
     while not stop_event.is_set():
         check_once()
-        stop_event.wait(CHECK_INTERVAL)
+        stop_event.wait(CHECK_INTERVAL*60)
 
 app = wx.App(False)
 
