@@ -37,6 +37,7 @@ class SettingsWindow(AppWindow):
 
         api_label = wx.StaticText(panel,label="Hypixel API Key")
         api_label.SetForegroundColour(wx.Colour(207, 207, 207))
+        api_label.SetFont(wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_BOLD))
 
         main_sizer.Add(api_label,0,wx.LEFT | wx.RIGHT | wx.TOP,25)
 
@@ -48,6 +49,7 @@ class SettingsWindow(AppWindow):
 
         interval_label = wx.StaticText(panel,label="Check Interval (minutes)")
         interval_label.SetForegroundColour(wx.Colour(207, 207, 207))
+        interval_label.SetFont(wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_BOLD))
 
         main_sizer.Add(interval_label,0,wx.LEFT | wx.RIGHT | wx.TOP,25)
 
