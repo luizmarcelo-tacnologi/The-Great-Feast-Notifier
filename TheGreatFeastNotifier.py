@@ -21,10 +21,8 @@ def load_config():
     global config
     global API_KEY
     global CHECK_INTERVAL
-    global set_key_warning
-
+    
     if not os.path.exists(cfgp.config_path):
-        set_key_warning = True
         create_default_config()
 
     with open(cfgp.config_path, "r") as file:
