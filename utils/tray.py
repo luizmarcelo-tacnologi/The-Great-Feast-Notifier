@@ -11,7 +11,7 @@ class TrayIcon(wx.adv.TaskBarIcon):
 
         self.menu = TrayMenu(check_now,open_config,open_logs,quit_program)
 
-        self.SetIcon(wx.Icon(cfgp.resource_path("hypixel.ico"),wx.BITMAP_TYPE_ICO),"The Grand Feast Notifier")
+        self.SetIcon(wx.Icon(cfgp.resource_path("hypixel.ico"),wx.BITMAP_TYPE_ICO),"The Great Feast Notifier")
 
         self.Bind(wx.adv.EVT_TASKBAR_LEFT_UP,self.on_left_click)
 

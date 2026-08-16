@@ -1,3 +1,5 @@
+PROBLEMS TO SOLVE
+	make a log cicling, to prevent the log from growing forever
 PLANS FOR THE FUTURE
 	maybe change the menu options' order
 	config a proper installer for the program (with start menu folder, run on startup, and some other usefull features)
