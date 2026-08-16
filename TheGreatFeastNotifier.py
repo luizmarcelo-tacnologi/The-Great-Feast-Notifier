@@ -328,7 +328,10 @@ logs_window = LogsWindow()
 
 tray = TrayIcon(check_now=manual_check,open_config=open_config,open_logs=open_logs,quit_program=quit_program)
 
-wx.CallAfter(threading.Thread(target=check_loop,daemon=True).start())
+def checking_thread():
+    threading.Thread(target=check_loop,daemon=True).start()
+
+wx.CallAfter(checking_thread)
 
 app.MainLoop()
 
