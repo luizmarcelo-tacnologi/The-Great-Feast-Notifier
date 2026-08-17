@@ -1,5 +1,4 @@
 PROBLEMS TO SOLVE
-	aparently a valid API key isn't necessary to get the data i want, how, why, is it really that way?
 	make a log cicling, to prevent the log from growing forever
 PLANS FOR THE FUTURE
 	maybe change the menu options' order
@@ -8,5 +7,5 @@ PLANS FOR THE FUTURE
 	maybe try to make the wxPython menus better looking (main one, settings and logs)
 	hunt for things to maybe make the program consume less RAM
 	maybe, just maybe, migrate the GUI to C#, and even less prone to, move the entire thing to C#
-
-
+NOTES
+	aparently a valid API key isn't necessary to get the data i want, how, why, is it really that way?

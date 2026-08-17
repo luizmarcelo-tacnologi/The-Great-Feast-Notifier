@@ -19,7 +19,6 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
 
 def load_config():
     global config
-    global API_KEY
     global CHECK_INTERVAL
 
     if not os.path.exists(cfgp.config_path):
@@ -28,7 +27,6 @@ def load_config():
     with open(cfgp.config_path, "r") as file:
         config = json.load(file)
 
-    API_KEY = config["api_key"]
     CHECK_INTERVAL = config["check_interval"]
 
 def open_config():
@@ -49,12 +47,10 @@ def manual_check():
     global last_mayor_state
     global last_candidate_state
     global last_harvest_feast_state
-    global set_key_warning
 
     last_mayor_state = False
     last_candidate_state = False
     last_harvest_feast_state = False
-    set_key_warning = False
 
     log("[NOTE] Manual Checking!")
     check_once()
@@ -67,8 +63,6 @@ def quit_program():
 def create_default_config():
 
     default_config = {
-        "expiration_date": "",
-        "api_key": "",
         "check_interval": 5
     }
 
@@ -76,21 +70,10 @@ def create_default_config():
         json.dump(default_config, file, indent=4)
 
 def save_config(config):
-
-    with open(
-        cfgp.config_path,
-        "w",
-        encoding="utf-8"
-    ) as file:
-
-        json.dump(
-            config,
-            file,
-            indent=4
-        )
+    with open(cfgp.config_path,"w",encoding="utf-8") as file:
+        json.dump(config,file,indent=4)
 
 startup_notification = False
-set_key_warning = False
 last_elections_cooldown = False
 last_mayor_state = False
 last_minister_state = False
@@ -134,25 +117,11 @@ def check_api():
 
     global data
     global failed_requests
-    global set_key_warning
     global startup_notification
-
-    if API_KEY == "":
-        if not set_key_warning:
-            log("[ERROR] No API Key set!")
-            notification(
-                "Set your API key on the Settings!",
-                "A Hypixel Skyblock API key is required to the program to function! Set one on the Settings!",
-                "Error.png",
-                "minecraft-level-up-sound.wav"
-            )
-        set_key_warning = True
-        return False
     
     try:
         response = requests.get(
             "https://api.hypixel.net/v2/resources/skyblock/election",
-            headers={"API-Key": API_KEY},
             timeout=10
         )
     
@@ -205,7 +174,6 @@ def check_once():
 
     load_config()
 
-    global set_key_warning
     global failed_requests
     global startup_notification
     global last_elections_cooldown
@@ -224,7 +192,7 @@ def check_once():
     success_api_check = check_api()
     wx.CallAfter(update_status, success_api_check)
     if not success_api_check:
-        if not startup_notification and failed_requests == 1 and not set_key_warning:
+        if not startup_notification and failed_requests == 1:
             notification(
                 "Not Initialized Correctly!!!",
                 "Something isn't working! Check the logs!",

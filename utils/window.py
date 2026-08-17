@@ -35,18 +35,6 @@ class SettingsWindow(AppWindow):
 
         main_sizer.Add(title,0,wx.LEFT | wx.RIGHT | wx.TOP,25)
 
-        api_label = wx.StaticText(panel,label="Hypixel API Key")
-        api_label.SetForegroundColour(wx.Colour(207, 207, 207))
-        api_label.SetFont(wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_BOLD))
-
-        main_sizer.Add(api_label,0,wx.LEFT | wx.RIGHT | wx.TOP,25)
-
-        self.api_key = wx.TextCtrl(panel,value=self.config.get("api_key", ""),style=wx.TE_CENTER)
-        self.api_key.SetBackgroundColour(wx.Colour(45, 45, 45))
-        self.api_key.SetForegroundColour(wx.Colour(230, 230, 230))
-
-        main_sizer.Add(self.api_key,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP,25)
-
         interval_label = wx.StaticText(panel,label="Check Interval (minutes)")
         interval_label.SetForegroundColour(wx.Colour(207, 207, 207))
         interval_label.SetFont(wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_BOLD))
@@ -73,11 +61,9 @@ class SettingsWindow(AppWindow):
 
         panel.SetSizer(main_sizer)
 
-        self.api_key.SetSelection(0, 0)
         self.interval.SetFocus()
 
     def save(self):
-        self.config["api_key"] = self.api_key.GetValue()
         self.config["check_interval"] = self.interval.GetValue()
         self.save_callback(self.config)
         self.Hide()
