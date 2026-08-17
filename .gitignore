@@ -1,5 +1,4 @@
 installer/
-installer.iss
 dist/
 build/
 TheGreatFeastNotifier.spec

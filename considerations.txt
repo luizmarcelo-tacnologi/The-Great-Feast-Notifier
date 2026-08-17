@@ -1,4 +1,5 @@
 PROBLEMS TO SOLVE
+	aparently a valid API key isn't necessary to get the data i want, how, why, is it really that way?
 	make a log cicling, to prevent the log from growing forever
 PLANS FOR THE FUTURE
 	maybe change the menu options' order
