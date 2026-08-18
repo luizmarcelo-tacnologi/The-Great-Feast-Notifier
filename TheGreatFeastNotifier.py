@@ -8,11 +8,11 @@ from datetime import datetime
 import os
 
 # ultils files
-import utils.configpath as cfgp
-from utils.logger import log
-from utils.notifier import notification
-from utils.tray import TrayIcon
-from utils.window import SettingsWindow,LogsWindow
+import utils.base.configpath as cfgp
+from utils.base.logger import log
+from utils.base.notifier import notification
+from utils.core.tray import TrayIcon
+from utils.menu.window import SettingsWindow,LogsWindow
 
 APP_ID = "TheGreatFeastNotifier"
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)

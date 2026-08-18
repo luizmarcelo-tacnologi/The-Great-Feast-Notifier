@@ -1,6 +1,6 @@
 import winsound
 from win11toast import toast
-import utils.configpath as cfgp
+import utils.base.configpath as cfgp
 
 def notification(header, message, image, sound):
     winsound.PlaySound(

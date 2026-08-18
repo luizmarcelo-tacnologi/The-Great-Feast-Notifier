@@ -1,7 +1,7 @@
 import wx
 import wx.adv
-import utils.configpath as cfgp
-from utils.menu import TrayMenu
+import utils.base.configpath as cfgp
+from utils.menu.menu import TrayMenu
 
 class TrayIcon(wx.adv.TaskBarIcon):
 

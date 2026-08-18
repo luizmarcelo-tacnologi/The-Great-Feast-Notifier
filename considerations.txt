@@ -1,11 +1,12 @@
 PROBLEMS TO SOLVE
+	make the program wait for the user to log-in(after restarting the computer) to send any notification
+	reorganize the code, make something about the number of global variables, modularize some of the functions on the main .py
 	make a log cicling, to prevent the log from growing forever
+	add a option to the configs "Start with windows"
 PLANS FOR THE FUTURE
-	maybe change the menu options' order
-	config a proper installer for the program (with start menu folder, run on startup, and some other usefull features)
-	change the AI banners and icon (Error.png;banner.png;hypixel.ico) to some proper thing, and maybe add some different banners too
-	maybe try to make the wxPython menus better looking (main one, settings and logs)
+	make all the menus pretier
+	change the AI banners and icon (Error.png;banner.png;hypixel.ico), and maybe add some different banners too
 	hunt for things to maybe make the program consume less RAM
-	maybe, just maybe, migrate the GUI to C#, and even less prone to, move the entire thing to C#
+	maybe, just maybe, migrate the entire thing to C#
 NOTES
-	aparently a valid API key isn't necessary to get the data i want, how, why, is it really that way?
+	aparently a valid API key wasn't necessary to get the data i want. How, why, is it really that way? Am I that dumb to never have noticed that?

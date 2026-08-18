@@ -1,5 +1,5 @@
 import wx
-from utils.configpath import resource_path
+from utils.base.configpath import resource_path
 
 class MenuButton(wx.Panel):
 

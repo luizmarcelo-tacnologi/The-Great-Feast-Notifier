@@ -10,7 +10,7 @@ log_path = None
 def get_app_path():
     if getattr(sys, "frozen", False):
         return sys._MEIPASS
-    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def get_data_path():
     local_app_data = os.environ.get("LOCALAPPDATA")
@@ -27,7 +27,7 @@ def resource_path(relative_path):
     if getattr(sys, "frozen", False):
         return os.path.join(sys._MEIPASS,"Atlas", relative_path)
     else:
-        return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),"Atlas", relative_path)
+        return os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),"Atlas", relative_path)
 
 def set_paths():
     global base_path

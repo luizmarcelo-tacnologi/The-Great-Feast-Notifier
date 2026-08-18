@@ -1,6 +1,6 @@
 import wx
-import utils.configpath as cfgp
-from utils.menu import MenuButton
+import utils.base.configpath as cfgp
+from utils.menu.menu import MenuButton
 
 class AppWindow(wx.Frame):
 

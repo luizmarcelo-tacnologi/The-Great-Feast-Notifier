@@ -1,5 +1,5 @@
 from datetime import datetime
-import utils.configpath as cfgp
+import utils.base.configpath as cfgp
 
 def log(message):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
