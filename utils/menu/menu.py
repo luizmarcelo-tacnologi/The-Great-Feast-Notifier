@@ -151,8 +151,7 @@ class TrayMenu(wx.Frame):
 
         last_checked_title = wx.StaticText(panel, label="Last checked")
         last_checked_title.SetForegroundColour(wx.Colour(150, 150, 150))
-        last_checked_title.SetFont(
-        wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL))
+        last_checked_title.SetFont(wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL))
 
         sizer.Add(last_checked_title,0,wx.LEFT | wx.RIGHT,20)
 

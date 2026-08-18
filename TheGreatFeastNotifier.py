@@ -1,233 +1,110 @@
-import requests
-import time
-import json
 import threading
 import ctypes
 import wx
-from datetime import datetime
-import os
+import json
+import datetime
 
 # ultils files
 import utils.base.configpath as cfgp
+import utils.base.configmng as cfmng
 from utils.base.logger import log
 from utils.base.notifier import notification
+from utils.core.checks.feast_check import check_for_feast
 from utils.core.tray import TrayIcon
+from utils.core.states import state
 from utils.menu.window import SettingsWindow,LogsWindow
 
-APP_ID = "TheGreatFeastNotifier"
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
+#Set the program name
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("TheGreatFeastNotifier")
 
-def load_config():
-    global config
-    global CHECK_INTERVAL
+#Set the paths to the files used
+cfgp.set_paths()
 
-    if not os.path.exists(cfgp.config_path):
-        create_default_config()
+#Define the config file and the event to stop the main loop
+config = cfmng.load_config()
+stop_event = threading.Event()
 
-    with open(cfgp.config_path, "r") as file:
-        config = json.load(file)
+#Logs that the program started
+log("[NOTE] Program Started")
 
-    CHECK_INTERVAL = config["check_interval"]
+#Defines the buttons used on the menus
 
-def open_config():
+def check_now_button():
+    state.checks.feast.reset()
+    log("[NOTE] Manual Checking!")
+    check_once()
+
+def open_config_button():
     settings_window.Show()
     settings_window.Raise()
 
-def save_settings(config):
-    save_config(config)
-    load_config()
-
-def open_logs():
+def open_logs_button():
     logs_window.refresh_logs()
     logs_window.Show()
     logs_window.Raise()
 
-def manual_check():
-
-    global last_mayor_state
-    global last_candidate_state
-    global last_harvest_feast_state
-
-    last_mayor_state = False
-    last_candidate_state = False
-    last_harvest_feast_state = False
-
-    log("[NOTE] Manual Checking!")
-    check_once()
-
-def quit_program():
+def quit_program_button():
     log("[NOTE] Program Closed")
     stop_event.set()
     wx.CallAfter(wx.GetApp().ExitMainLoop)
 
-def create_default_config():
-
-    default_config = {
-        "check_interval": 5
-    }
-
-    with open(cfgp.config_path, "w", encoding="utf-8") as file:
-        json.dump(default_config, file, indent=4)
-
-def save_config(config):
+def save_settings_button(config):
     with open(cfgp.config_path,"w",encoding="utf-8") as file:
-        json.dump(config,file,indent=4)
+            json.dump(config,file,indent=4)
+    cfmng.load_config()
 
-startup_notification = False
-last_elections_cooldown = False
-last_mayor_state = False
-last_minister_state = False
-last_candidate_state = False
-last_harvest_feast_state = False
-failed_requests = 0
-data = None
-
-SKYBLOCK_EPOCH = 1560275700
-SECONDS_PER_SKYBLOCK_DAY = 1200
-DAYS_PER_YEAR = 372
-DAYS_PER_MONTH = 31
-
-cfgp.set_paths()
-load_config()
-stop_event = threading.Event()
-log("[NOTE] Program Started")
-
+#Updates the menu's Last Checked section
 def update_status(success):
-    current_time = datetime.now().strftime("%H:%M:%S")
+    current_time = datetime.datetime.now().strftime("%H:%M:%S")
     if success:
         status = "Connected"
     else:
         status = "Connection failed"
     tray.menu.update_status(current_time, status)
 
-def failed_request_handler(msg):
-    global failed_requests
-    failed_requests += 1
-    log(msg)
-    if failed_requests == 10:
-        log("[ERROR] Major Failed Request Streak!")
-        notification(
-            "Major Failed Request Streak!!!",
-            "Check the logs to see what is wrong!",
-            "Error.png",
-            "minecraft-level-up-sound.wav"
-        )
-
-def check_api():
-
-    global data
-    global failed_requests
-    global startup_notification
-    
-    try:
-        response = requests.get(
-            "https://api.hypixel.net/v2/resources/skyblock/election",
-            timeout=10
-        )
-    
-        response.raise_for_status()
-    
-        new_data = response.json()
-    
-        if not new_data.get("success", False):
-            cause = new_data.get("cause", "Unknown reason")
-            failed_request_handler(f"[WARNING] Hypixel API rejected the request: {cause}")
-            return False
-
-        data = new_data
-        
-        if failed_requests > 0:
-            log(f"[SUCCESS] API request successful after {failed_requests} failed requests")
-            if failed_requests >= 10:
-                log("[NOTIFICATION] Working fine notification sent!")
-                startup_notification = True
-                notification(
-                    "Everything Working Just Fine!!!",
-                    "Don't matter the problem it's all right now!",
-                    "banner.png",
-                    "minecraft-level-up-sound.wav"
-                )
-            failed_requests = 0
-        return True
-
-    except requests.exceptions.Timeout:
-        failed_request_handler("[WARNING] Request timed out.")
-        return False
-
-    except requests.exceptions.ConnectionError:
-        failed_request_handler("[WARNING] Could not connect to the Hypixel API.")
-        return False
-    
-    except requests.exceptions.HTTPError as e:
-        failed_request_handler(f"[WARNING] HTTP {response.status_code} - {e}")
-        return False
-
-    except requests.exceptions.RequestException as e:
-        failed_request_handler(f"[WARNING] Request failed: {e}")
-        return False
-
-    except Exception as e:
-        failed_request_handler(f"[WARNING] {e}")
-        return False
-
+#The loop that will be in charge of checking the data to send notifications and log about it
 def check_once():
 
-    load_config()
+    #To use the acess the program states
+    global state
 
-    global failed_requests
-    global startup_notification
-    global last_elections_cooldown
-    global last_mayor_state
-    global last_minister_state
-    global last_candidate_state
-    global last_harvest_feast_state
-    global data
+    #Get the feast data
+    feast_data = check_for_feast()
 
-    elections_cooldown = False
-    finnegan_mayor_grandfeast = False
-    finnegan_minister_grandfeast = False
-    finnegan_running_grandfeast = False
-    harvest_feast = False
+    #Runs the Last Checked updater
+    wx.CallAfter(update_status, feast_data['success'])
 
-    success_api_check = check_api()
-    wx.CallAfter(update_status, success_api_check)
-    if not success_api_check:
-        if not startup_notification and failed_requests == 1:
+    #In case the api check fails
+    if not feast_data['success']:
+        state.init.startup_notification = True
+        state.api.failed_api_requests += 1
+        log(feast_data['cause'])
+        if state.api.failed_api_requests == 10:
+            log("[ERROR] Major Failed Request Streak!")
             notification(
-                "Not Initialized Correctly!!!",
-                "Something isn't working! Check the logs!",
+                "Major Failed Request Streak!!!",
+                "Check the logs to see what is wrong!",
                 "Error.png",
                 "minecraft-level-up-sound.wav"
             )
         return
 
-    if data['mayor']['name'] == 'Finnegan':
-        for mayor_perk in data['mayor']['perks']:
-            if mayor_perk['name'] == 'Grand Feast':
-                finnegan_mayor_grandfeast = True
+    #To reset the failed_api_requests counter
+    if state.api.failed_api_requests > 0:
+        log(f"[SUCCESS] API request successful after {state.api.failed_api_requests} failed requests")
+        if state.api.failed_api_requests >= 10:
+            log("[NOTIFICATION] Working fine notification sent!")
+            notification(
+                "Everything Working Just Fine!!!",
+                "Don't matter the problem it's all right now!",
+                "banner.png",
+                "minecraft-level-up-sound.wav"
+            )
+        state.api.failed_api_requests = 0
 
-    if data['mayor']['minister']['perk']['name'] == 'Grand Feast':
-        finnegan_minister_grandfeast = True
-
-    if 'current' in data:
-        elections_cooldown = False
-        for candidate in data['current']['candidates']:
-            if candidate['name'] == 'Finnegan':
-                for candidate_perk in candidate['perks']:
-                    if candidate_perk['name'] == 'Grand Feast':
-                        finnegan_running_grandfeast = True
-    else:
-        elections_cooldown = True
-        if not last_elections_cooldown:
-            log("[DATA_WARNING] No data for next election's candidates!")
-
-    now = time.time()
-    skyblock_days = (now - SKYBLOCK_EPOCH) // SECONDS_PER_SKYBLOCK_DAY
-    day_of_year = skyblock_days % DAYS_PER_YEAR
-    month = day_of_year // DAYS_PER_MONTH
-    harvest_feast = 6 <= month <= 8
-
-    if finnegan_mayor_grandfeast and not last_mayor_state:
+    #Test to send the notification about finnegan being mayor with the Great Feast perk
+    if feast_data['mayor'] and not state.checks.feast.mayor:
+        state.init.startup_notification = True
         log("[NOTIFICATION] Finnegan elected with Grand Feast Notification Sent")
         notification(
             "Grand Feast!!!",
@@ -236,7 +113,9 @@ def check_once():
             "minecraft-level-up-sound.wav"
         )
 
-    if finnegan_minister_grandfeast and not last_minister_state:
+    #Test to send the notification about finnegan being minister with the Great Feast perk
+    if feast_data['minister'] and not state.checks.feast.minister:
+        state.init.startup_notification = True
         log("[NOTIFICATION] Finnegan elected as a minister with Grand Feast Notification Sent")
         notification(
             "Grand Feast!!!",
@@ -244,8 +123,10 @@ def check_once():
             "banner.png",
             "minecraft-level-up-sound.wav"
         )
-
-    if finnegan_running_grandfeast and not last_candidate_state:
+    
+    #Test to send the notification about finnegan being candidate with the Great Feast perk
+    if feast_data['running'] and not state.checks.feast.candidate:
+        state.init.startup_notification = True
         log("[NOTIFICATION] Finnegan running with Grand Feast Notification Sent")
         notification(
             "Grand Feast!!! (Probably...)",
@@ -254,7 +135,9 @@ def check_once():
             "minecraft-level-up-sound.wav"
         )
 
-    if harvest_feast and not last_harvest_feast_state:
+    #Test to send the notification about finnegan being candidate with the Great Feast perk
+    if feast_data['harvest_feast'] and not state.checks.feast.harvest_feast:
+        state.init.startup_notification = True
         log("[NOTIFICATION] Harvest Feast detected and Notification sent.")
         notification(
             "Harvest Feast!",
@@ -263,44 +146,54 @@ def check_once():
             "minecraft-level-up-sound.wav"
         )
 
-    if not (finnegan_mayor_grandfeast or finnegan_minister_grandfeast or finnegan_running_grandfeast or harvest_feast or startup_notification):
+    #Test to send the startup notification
+    if not (feast_data['mayor'] or feast_data['minister'] or feast_data['running'] or feast_data['harvest_feast'] or state.init.startup_notification):
         notification(
             "The searching started!",
             "You will get notitfied when any Feast is detected!",
             "banner.png",
             "minecraft-level-up-sound.wav"
-            )
-        startup_notification = True
+        )
+        state.init.startup_notification = True
 
-    last_mayor_state = finnegan_mayor_grandfeast
-    last_minister_state = finnegan_minister_grandfeast
-    last_candidate_state = finnegan_running_grandfeast
-    last_harvest_feast_state = harvest_feast
-    last_elections_cooldown = elections_cooldown
-    startup_notification = True
+    #Set the gathered states
+    state.checks.feast.mayor = feast_data['mayor']
+    state.checks.feast.minister = feast_data['minister']
+    state.checks.feast.candidate = feast_data['running']
+    state.checks.feast.harvest_feast = feast_data['harvest_feast']
 
+#The main checking loop that runs on a separate thread
 def check_loop():
     while not stop_event.is_set():
         check_once()
-        stop_event.wait(CHECK_INTERVAL*60)
+        stop_event.wait((cfmng.load_config()['check_interval'])*60)
 
+#Set the GUI app
 app = wx.App(False)
 
+#Checks for another instance and close the program if it does find one
 instance_checker = wx.SingleInstanceChecker("TheGreatFeastNotifier")
 if instance_checker.IsAnotherRunning():
     raise SystemExit
 
-settings_window = SettingsWindow(config,save_settings)
-
+#Defines the auxiliar settings and logs windows
+settings_window = SettingsWindow(config,save_settings_button)
 logs_window = LogsWindow()
 
-tray = TrayIcon(check_now=manual_check,open_config=open_config,open_logs=open_logs,quit_program=quit_program)
+#Defines the program's tray icon
+tray = TrayIcon(
+    check_now=check_now_button,
+    open_config=open_config_button,
+    open_logs=open_logs_button,
+    quit_program=quit_program_button
+)
 
+#Waits for the menus to load before start checking the api
 def checking_thread():
     threading.Thread(target=check_loop,daemon=True).start()
-
 wx.CallAfter(checking_thread)
 
+#Runs the GUI app
 app.MainLoop()
 
 #Build code:

@@ -1,6 +1,5 @@
 PROBLEMS TO SOLVE
 	make the program wait for the user to log-in(after restarting the computer) to send any notification
-	reorganize the code, make something about the number of global variables, modularize some of the functions on the main .py
 	make a log cicling, to prevent the log from growing forever
 	add a option to the configs "Start with windows"
 PLANS FOR THE FUTURE

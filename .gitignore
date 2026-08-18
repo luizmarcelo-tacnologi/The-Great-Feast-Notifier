@@ -4,3 +4,7 @@ build/
 TheGreatFeastNotifier.spec
 __pycache__/
 utils/__pycache__/
+utils/base/__pycache__/
+utils/menu/__pycache__/
+utils/core/__pycache__/
+utils/core/checks/__pycache__/
