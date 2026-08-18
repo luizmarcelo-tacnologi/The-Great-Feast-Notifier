@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
 
+#The names here are pretty self explanatory
+
 #Child of ProgramStates
 @dataclass
 class InitializationStates:
@@ -8,7 +10,8 @@ class InitializationStates:
 #Child of ProgramStates
 @dataclass
 class ApiStates:
-    failed_api_requests: int = 0
+    failed_requests: int = 0
+    connection: bool = None
 
 #Child of CheckStates
 @dataclass
@@ -18,6 +21,7 @@ class FeastStates:
     candidate: bool = False
     harvest_feast: bool = False
 
+    #A small function to reset it's values
     def reset(self):
         self.mayor = False
         self.minister = False
@@ -36,4 +40,5 @@ class ProgramStates:
     api: ApiStates = field(default_factory=ApiStates)
     checks: CheckStates = field(default_factory=CheckStates)
 
+#The one that takes care of everything
 state = ProgramStates()
