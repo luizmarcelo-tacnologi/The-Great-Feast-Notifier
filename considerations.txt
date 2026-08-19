@@ -1,4 +1,5 @@
 PROBLEMS TO SOLVE
+	The notification still apperars as from python and with no logo, even on the installed version of the program
 	make the program wait for the user to log-in(after restarting the computer) to send any notification
 	make a log cicling, to prevent the log from growing forever
 	add a option to the configs "Start with windows"
