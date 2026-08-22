@@ -5,8 +5,18 @@ from utils.base.notifier import notification
 #Handles with the failed api requests
 def failed_request(cause):
 
+    #Sets the connection state to false
+    state.api.connection = False
+
     #I don't want a jolly startup notification when there is an error ocuring
-    state.init.startup_notification = True
+    if not state.init.startup_notification:
+        state.init.startup_notification = True
+        notification(
+            "Not Initialized Correctly!!!",
+            "Check the logs to see what is wrong!",
+            "Error.png",
+            "minecraft-level-up-sound.wav"
+        )
 
     #Makes the failed requests conter go up by 1
     state.api.failed_requests += 1

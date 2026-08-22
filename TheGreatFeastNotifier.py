@@ -7,19 +7,22 @@ import datetime
 # ultils files
 import utils.base.configpath as cfgp
 import utils.base.configmng as cfmng
-from utils.base.logger import log
-from utils.base.notifier import notification, register_app_identity
+from utils.base.logger import log,init_logger
+from utils.base.notifier import register_app_identity
 from utils.core.checks.feast_check import check_for_feast
 from utils.core.tray import TrayIcon
-from utils.core.states import state
 from utils.menu.window import SettingsWindow,LogsWindow
+from utils.core.states import state
 
 #Set the program name
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("TheGreatFeastNotifier")
 
-#Set the paths to the files used and the app indentity for the notifications
+#Set the paths to the files used
 cfgp.set_paths()
+#Set the app indentity for the notifications
 register_app_identity()
+#Set the logger
+init_logger()
 
 #Define the config file and the events related to the main loop
 config = cfmng.load_config()
@@ -75,7 +78,8 @@ def check_loop():
         #Runs the Last Checked updater
         wx.CallAfter(update_status, state.api.connection)
 
-        reescan_event.wait((cfmng.load_config()['check_interval'])*60)
+        #The event that handles the loop waiting
+        reescan_event.wait((config['check_interval'])*60)
         reescan_event.clear()
 
 #Set the GUI app

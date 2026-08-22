@@ -1,6 +1,5 @@
 PROBLEMS TO SOLVE
 	windows security blocks the app and the installer saying it couldn't verify it's publisher
-	make a log cicling, to prevent the log from growing forever
 	do something to check if the user have microsoft's ARSO activated to delay the app start until log-in
 	add a little delay to sending notifications after user log-in
 PLANS FOR THE FUTURE
