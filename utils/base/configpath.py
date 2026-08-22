@@ -1,21 +1,12 @@
 import sys
 import os
 
-#The program name
+#The program's name
 APP_NAME = "TheGreatFeastNotifier"
 
 #The variables for storing the paths
-base_path = None
 config_path = None
 log_path = None
-
-#Function to get the program path
-def get_app_path():
-    #On the .exe form
-    if getattr(sys, "frozen", False):
-        return os.path.dirname(sys.executable)
-    #On the python form
-    return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 #Funtion to get the localappdata path
 def get_data_path():
@@ -34,18 +25,17 @@ def get_data_path():
 
 #Function to get the resources path
 def resource_path(relative_path):
-    return os.path.join(get_app_path(),"Atlas", relative_path)
+    #On the .exe form
+    if getattr(sys, "frozen", False):
+        return os.path.join(os.path.dirname(sys.executable),"_internal","Atlas", relative_path)
+    #On the python form
+    return os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),"Atlas", relative_path)
 
 #Function to set the paths
 def set_paths():
-    global base_path
     global config_path
     global log_path
 
-    #Get the paths
-    base_path = get_app_path()
-    data_path = get_data_path()
-
     #Two really useful paths
-    config_path = os.path.join(data_path, "config.json")
-    log_path = os.path.join(data_path, "logs.txt")
+    config_path = os.path.join(get_data_path(), "config.json")
+    log_path = os.path.join(get_data_path(), "logs.txt")

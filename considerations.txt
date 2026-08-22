@@ -1,8 +1,10 @@
 PROBLEMS TO SOLVE
 	windows security blocks the app and the installer saying it couldn't verify it's publisher
-	decide if should go with the startup folder shortcut or with a registry key
-	do something to check if the user have microsoft's ARSO activated to delay the app start until log-in
-	add a little delay to sending notifications after user log-in
+	STARTUP
+		add the option to start with windows to the settings (via registry key)
+		add the removal of said key to the uninstaller
+		add a initial check to see if the user is already logged-in (probably using WTS_SESSION_UNLOCK, to account for microsoft's ARSO)
+		add a little delay to start checking the api after the program starts
 PLANS FOR THE FUTURE
 	make all the menus pretier
 	change the AI banners and icon (Error.png;banner.png;hypixel.ico), and maybe add some different banners too

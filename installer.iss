@@ -43,11 +43,6 @@ Name: "{autodesktop}\{#MyAppName}"; \
     WorkingDir: "{app}"; \
     Tasks: desktopicon
     
-Name: "{autostartup}\{#MyAppName}"; \
-    Filename: "{app}\{#MyAppExeName}"; \
-    WorkingDir: "{app}"; \
-    Tasks: startup
-    
 [Tasks]
 Name: "startmenu"; \
     Description: "Create a &Start Menu shortcut"; \
@@ -57,10 +52,6 @@ Name: "desktopicon"; \
     Description: "Create a &desktop shortcut"; \
     GroupDescription: "Shortcuts:"; \
     Flags: unchecked
-    
-Name: "startup"; \
-    Description: "Start {#MyAppName} with Windows"; \
-    GroupDescription: "Startup options:"
     
 [Run]
 Filename: "{app}\{#MyAppExeName}"; \
