@@ -8,7 +8,7 @@ import datetime
 import utils.base.configpath as cfgp
 import utils.base.configmng as cfmng
 from utils.base.logger import log
-from utils.base.notifier import notification
+from utils.base.notifier import notification, register_app_identity
 from utils.core.checks.feast_check import check_for_feast
 from utils.core.tray import TrayIcon
 from utils.core.states import state
@@ -17,8 +17,9 @@ from utils.menu.window import SettingsWindow,LogsWindow
 #Set the program name
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("TheGreatFeastNotifier")
 
-#Set the paths to the files used
+#Set the paths to the files used and the app indentity for the notifications
 cfgp.set_paths()
+register_app_identity()
 
 #Define the config file and the events related to the main loop
 config = cfmng.load_config()
