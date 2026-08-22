@@ -26,13 +26,13 @@ stop_event = threading.Event()
 reescan_event = threading.Event()
 
 #Logs that the program started
-log("[NOTE] Program Started")
+log("[INFO] Program Started")
 
 #Defines the buttons used on the menus
 
 def check_now_button():
     state.checks.feast.reset()
-    log("[NOTE] Manual Checking!")
+    log("[INFO] Manual Checking!")
     reescan_event.set()
 
 def open_config_button():
@@ -45,7 +45,7 @@ def open_logs_button():
     logs_window.Raise()
 
 def quit_program_button():
-    log("[NOTE] Program Closed")
+    log("[INFO] Program Closed")
     reescan_event.set()
     stop_event.set()
     wx.CallAfter(wx.GetApp().ExitMainLoop)
