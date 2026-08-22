@@ -11,8 +11,10 @@ log_path = None
 
 #Function to get the program path
 def get_app_path():
+    #On the .exe form
     if getattr(sys, "frozen", False):
-        return sys._MEIPASS
+        return os.path.dirname(sys.executable)
+    #On the python form
     return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 #Funtion to get the localappdata path
@@ -32,11 +34,7 @@ def get_data_path():
 
 #Function to get the resources path
 def resource_path(relative_path):
-    if getattr(sys, "frozen", False):
-        return os.path.join(sys._MEIPASS,"Atlas", relative_path)
-    else:
-        #This .py is kinda nested
-        return os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),"Atlas", relative_path)
+    return os.path.join(get_app_path(),"Atlas", relative_path)
 
 #Function to set the paths
 def set_paths():

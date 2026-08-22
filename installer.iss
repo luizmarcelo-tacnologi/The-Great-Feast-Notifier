@@ -28,9 +28,9 @@ SolidCompression=yes
 WizardStyle=modern
 
 [Files]
-Source: "dist\{#MyAppExeName}"; \
+Source: "dist\TheGreatFeastNotifier\*"; \
     DestDir: "{app}"; \
-    Flags: ignoreversion
+    Flags: ignoreversion recursesubdirs createallsubdirs
     
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; \
