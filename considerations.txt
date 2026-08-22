@@ -2,7 +2,6 @@ PROBLEMS TO SOLVE
 	windows security blocks the app and the installer saying it couldn't verify it's publisher
 	make the program wait for the user to log-in(after restarting the computer) to send any notification
 	make a log cicling, to prevent the log from growing forever
-	add a option to the configs "Start with windows"
 PLANS FOR THE FUTURE
 	make all the menus pretier
 	change the AI banners and icon (Error.png;banner.png;hypixel.ico), and maybe add some different banners too
