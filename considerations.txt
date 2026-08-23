@@ -1,13 +1,12 @@
 PROBLEMS TO SOLVE
-	windows security blocks the app and the installer saying it couldn't verify it's publisher
 	STARTUP
 		add the option to start with windows to the settings (via registry key)
-		add the removal of said key to the uninstaller
 		add a initial check to see if the user is already logged-in (probably using WTS_SESSION_UNLOCK, to account for microsoft's ARSO)
 		add a little delay to start checking the api after the program starts
+	add the removal of the notification and the future present startup keys to the uninstaller
 PLANS FOR THE FUTURE
 	make all the menus pretier
-	change the AI banners and icon (Error.png;banner.png;hypixel.ico), and maybe add some different banners too
+	change the AI banners and icon, and maybe add some different banners too
 	hunt for things to maybe make the program consume less RAM
 	maybe, just maybe, migrate the entire thing to C#
 NOTES
