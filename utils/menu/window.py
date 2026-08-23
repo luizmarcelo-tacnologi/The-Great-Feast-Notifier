@@ -2,6 +2,7 @@ import wx
 import utils.base.configpath as cfgp
 from utils.menu.menu import MenuButton
 from utils.menu.support.baseappwindow import AppWindow
+import utils.base.startup.startwithwindows as startup
 
 #Class of the settings window
 class SettingsWindow(AppWindow):
@@ -50,6 +51,11 @@ class SettingsWindow(AppWindow):
         #Add the interval box
         main_sizer.Add(self.interval,0,wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP,25)
 
+        self.startup_checkbox = wx.CheckBox(panel, label="Start with Windows")
+        self.startup_checkbox.SetForegroundColour(wx.Colour(207, 207, 207))
+        self.startup_checkbox.SetValue(self.config.get("start_with_windows", False))
+        main_sizer.Add(self.startup_checkbox, 0, wx.LEFT | wx.RIGHT | wx.TOP, 25)
+
         #The Button Sizer™
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -78,6 +84,10 @@ class SettingsWindow(AppWindow):
     def save(self):
         #Sets the new value
         self.config["check_interval"] = self.interval.GetValue()
+
+        self.config["start_with_windows"] = self.startup_checkbox.GetValue()
+        startup.set_startup(self.config["start_with_windows"])
+
         #Saves the new value
         self.save_callback(self.config)
         #Go waiting

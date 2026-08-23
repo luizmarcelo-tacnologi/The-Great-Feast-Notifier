@@ -18,7 +18,8 @@ def create_default_config():
 
     #For now it's quite small
     default_config = {
-        "check_interval": 5
+        "check_interval": 5,
+        "start_with_windows": False
     }
 
     #Saves the default config

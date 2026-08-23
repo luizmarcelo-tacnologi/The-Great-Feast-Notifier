@@ -8,6 +8,7 @@ PLANS FOR THE FUTURE
 	make all the menus pretier
 	change the AI banners and icon, and maybe add some different banners too
 	hunt for things to maybe make the program consume less RAM
+	maybe change the menus to be HTML/CSS based i guess
 	maybe, just maybe, migrate the entire thing to C#
 NOTES
 	aparently a valid API key wasn't necessary to get the data i want. How, why, is it really that way? Am I that dumb to never have noticed that?

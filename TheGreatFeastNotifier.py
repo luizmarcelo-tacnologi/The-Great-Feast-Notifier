@@ -3,6 +3,7 @@ import ctypes
 import wx
 import json
 import datetime
+import time
 
 # ultils files
 import utils.base.configpath as cfgp
@@ -10,6 +11,7 @@ import utils.base.configmng as cfmng
 from utils.base.logger import log,init_logger
 from utils.base.notifier import register_app_identity
 from utils.core.checks.feast_check import check_for_feast
+from utils.base.startup.sessioncheck import SessionMonitor, is_session_locked
 from utils.core.tray import TrayIcon
 from utils.menu.window import SettingsWindow,LogsWindow
 from utils.core.states import state
@@ -28,6 +30,7 @@ init_logger()
 config = cfmng.load_config()
 stop_event = threading.Event()
 reescan_event = threading.Event()
+login_ready_event = threading.Event()
 
 #Logs that the program started
 log("[INFO] Program Started")
@@ -50,6 +53,7 @@ def open_logs_button():
 
 def quit_program_button():
     log("[INFO] Program Closed")
+    session_monitor.close()
     reescan_event.set()
     stop_event.set()
     wx.CallAfter(wx.GetApp().ExitMainLoop)
@@ -70,6 +74,10 @@ def update_status(success):
 
 #The main checking loop that runs on a separate thread
 def check_loop():
+
+    login_ready_event.wait()
+    time.sleep(8)
+
     while not stop_event.is_set():
 
         #Get the feast data
@@ -101,6 +109,10 @@ tray = TrayIcon(
     open_logs=open_logs_button,
     quit_program=quit_program_button
 )
+
+session_monitor = SessionMonitor(login_ready_event.set)
+if not is_session_locked():
+    login_ready_event.set()
 
 #Waits for the menus to load before start checking the api
 def checking_thread():

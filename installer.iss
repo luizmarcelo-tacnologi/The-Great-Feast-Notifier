@@ -52,6 +52,17 @@ Name: "desktopicon"; \
     Description: "Create a &desktop shortcut"; \
     GroupDescription: "Shortcuts:"; \
     Flags: unchecked
+
+[Registry]
+Root: HKCU; \
+    Subkey: "Software\Classes\AppUserModelId\TheGreatFeastNotifier"; \
+    Flags: dontcreatekey uninsdeletekey
+
+Root: HKCU; \
+    Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; \
+    ValueType: none; \
+    ValueName: "TheGreatFeastNotifier"; \
+    Flags: dontcreatekey uninsdeletevalue
     
 [Run]
 Filename: "{app}\{#MyAppExeName}"; \
