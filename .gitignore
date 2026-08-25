@@ -2,9 +2,12 @@ installer/
 dist/
 build/
 TheGreatFeastNotifier.spec
+The Great Feast Notifier.code-workspace
 __pycache__/
 utils/__pycache__/
 utils/base/__pycache__/
+utils/base/startup/__pycache__/
 utils/menu/__pycache__/
+utils/menu/support/__pycache__/
 utils/core/__pycache__/
 utils/core/checks/__pycache__/
