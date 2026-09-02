@@ -1,0 +1,2 @@
+A small personal project to learn python that aims to make a tray app that notifies about the Feast an Great Feast events on Hypixel Skyblock, but ended up in the hand of AI, currently trying to get out of this situation.
+The python program was made in python 3.14.6 depends on wxPython 4.3.1, requests 2.34.2 and win11toast 0.36.3, depends on PyInstaller 6.22.2 to build the program, and Inno Setup 7.1.0 to build the installer. Have no clue if any other versions also work.
