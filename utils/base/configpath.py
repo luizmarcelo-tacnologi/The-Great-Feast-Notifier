@@ -8,6 +8,14 @@ APP_NAME = "TheGreatFeastNotifier"
 config_path = None
 log_path = None
 
+#Function to get the app path
+def get_app_path():
+    #On the .exe form
+    if getattr(sys, "frozen", False):
+        return os.path.dirname(sys.executable)
+    #On the python form
+    return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 #Funtion to get the localappdata path
 def get_data_path():
 
@@ -27,9 +35,9 @@ def get_data_path():
 def resource_path(relative_path):
     #On the .exe form
     if getattr(sys, "frozen", False):
-        return os.path.join(os.path.dirname(sys.executable),"_internal","Atlas", relative_path)
+        return os.path.join(get_app_path(),"_internal","Atlas", relative_path)
     #On the python form
-    return os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),"Atlas", relative_path)
+    return os.path.join(get_app_path(),"Atlas", relative_path)
 
 #Function to set the paths
 def set_paths():

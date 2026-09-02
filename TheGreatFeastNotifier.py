@@ -110,7 +110,7 @@ tray = TrayIcon(
     quit_program=quit_program_button
 )
 
-session_monitor = SessionMonitor(login_ready_event.set)
+session_monitor = SessionMonitor(login_ready_event.set())
 if not is_session_locked():
     login_ready_event.set()
 
