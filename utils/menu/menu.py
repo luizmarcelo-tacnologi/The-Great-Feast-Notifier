@@ -17,7 +17,7 @@ class TrayMenu(wx.Frame):
         self.quit_program = quit_program
 
         #Sets it's size
-        self.SetSize((220, 250))
+        self.SetSize((10, 10))
 
         #Defines it's behavior
         self.Bind(wx.EVT_ACTIVATE, self.on_activate)
@@ -39,14 +39,6 @@ class TrayMenu(wx.Frame):
         #A shared sizer
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        #Sets the title and it's color & font
-        title = wx.StaticText(panel,label="The Great Feast Notifier")
-        title.SetForegroundColour(wx.Colour(255, 255, 255))
-        title.SetFont(wx.Font(12,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_BOLD))
-
-        #Add the title to the menu
-        sizer.Add(title,0,wx.ALL | wx.ALIGN_CENTER,15)
-
         #Defines the "Check Now" button
         check_button = MenuButton(
             panel,
@@ -56,7 +48,7 @@ class TrayMenu(wx.Frame):
         )
 
         #Add the "Check Now" button
-        sizer.Add(check_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM,10)
+        sizer.Add(check_button,0,wx.EXPAND |wx.LEFT |wx.RIGHT |wx.BOTTOM |wx.TOP,10)
 
         #Defines the "Settings" button
         config_button = MenuButton(
@@ -108,7 +100,7 @@ class TrayMenu(wx.Frame):
         last_checked_title.SetFont(wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL))
 
         #Add the "Last Checked" label
-        sizer.Add(last_checked_title,0,wx.LEFT | wx.RIGHT,20)
+        sizer.Add(last_checked_title,0,wx.LEFT | wx.RIGHT,15)
 
         #Defines the status label
         self.status_label = wx.StaticText(panel, label="Never • Not checked")
@@ -116,17 +108,17 @@ class TrayMenu(wx.Frame):
         self.status_label.SetFont(wx.Font(9,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL))
 
         #Add the status label
-        sizer.Add(self.status_label,0,wx.LEFT | wx.RIGHT | wx.BOTTOM,20)
+        sizer.Add(self.status_label,0,wx.ALIGN_CENTER_HORIZONTAL |wx.BOTTOM,10)
 
         #Defines the "Stop Program" button
         quit_button = MenuButton(
             panel,
             "Stop Program",
             lambda: self.execute(self.quit_program),
-            normal_colour=wx.Colour(50,16,16),
-            hover_colour=wx.Colour(100,0,0),
-            pressed_colour=wx.Colour(195,1,1),
-            text_colour=wx.Colour(255,50,50),
+            normal_colour=wx.Colour(40, 40, 40),
+            hover_colour=wx.Colour(120, 27, 39),
+            pressed_colour=wx.Colour(165, 34, 50),
+            text_colour=wx.Colour(175, 50, 50),
             icon=wx.Bitmap(resource_path("icons/quit.png"),wx.BITMAP_TYPE_PNG)
         )
 
@@ -147,7 +139,7 @@ class TrayMenu(wx.Frame):
 
         #Sets the height of the menu to be the minimun required
         best_size = frame_sizer.CalcMin()
-        self.SetSize((220, best_size.height))
+        self.SetSize((160, best_size.height))
 
         #Calls the function to make the menu's edges rounded
         self.set_rounded_shape()
@@ -193,6 +185,7 @@ class TrayMenu(wx.Frame):
         else:
             self.status_label.SetForegroundColour(wx.Colour(255, 100, 100))
         #Refreshes the label
+        self.status_label.GetParent().Layout()
         self.status_label.Refresh()
 
     #What calls the rounding edges function
