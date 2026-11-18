@@ -1,5 +1,7 @@
 import wx
 import wx.adv
+
+#Local imports
 import utils.base.configpath as cfgp
 from utils.menu.menu import TrayMenu
 

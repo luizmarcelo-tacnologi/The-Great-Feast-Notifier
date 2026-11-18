@@ -1,4 +1,6 @@
 import wx
+
+#Local imports
 from utils.base.configpath import resource_path
 from utils.menu.support.button import MenuButton
 

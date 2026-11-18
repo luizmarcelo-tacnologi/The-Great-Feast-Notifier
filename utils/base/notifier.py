@@ -1,6 +1,8 @@
 import winsound
 import winreg
 from win11toast import toast
+
+#Local imports
 import utils.base.configpath as cfgp
 
 #Sets the program's identity

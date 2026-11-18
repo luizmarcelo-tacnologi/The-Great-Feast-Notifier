@@ -5,7 +5,7 @@ import json
 import datetime
 import time
 
-# ultils files
+#Local imports
 import utils.base.configpath as cfgp
 import utils.base.configmng as cfmng
 from utils.base.logger import log,init_logger

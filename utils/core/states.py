@@ -1,3 +1,4 @@
+#Local imports
 from dataclasses import dataclass, field
 
 #The names here are pretty self explanatory

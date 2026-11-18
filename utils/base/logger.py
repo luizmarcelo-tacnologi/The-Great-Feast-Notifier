@@ -1,5 +1,7 @@
 import logging
 from logging.handlers import RotatingFileHandler
+
+#Local imports
 import utils.base.configpath as cfgp
 
 #Sets the logger

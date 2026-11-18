@@ -1,4 +1,6 @@
 import wx
+
+#Local imports
 import utils.base.configpath as cfgp
 from utils.menu.menu import MenuButton
 from utils.menu.support.baseappwindow import AppWindow

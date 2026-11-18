@@ -1,5 +1,7 @@
 import os
 import json
+
+#Local imports
 import utils.base.configpath as cfgp
 
 #The function to load the config
